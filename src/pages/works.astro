@@ -2,7 +2,7 @@
 import { getCollection } from "astro:content";
 import Layout from "@layouts/Layout.astro";
 
-const pageTitle = "ポートフォリオ";
+const pageTitle = "WORKS";
 const allWorks = await getCollection("works");
 const sortedWorks = allWorks.sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
@@ -20,10 +20,10 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
 >
   <div class="container">
     <div class="py-8">
-      <h1 class="text-4xl font-bold mb-8 motion-preset-slide-down-sm">{pageTitle}</h1>
+      <h1 class="text-4xl font-bold mb-8">{pageTitle}</h1>
 			
       <!-- 検索・フィルターエリア -->
-      <div class="card mb-8 motion-preset-slide-up-sm" style="animation-delay: 0.1s">
+      <div class="card mb-8" style="animation-delay: 0.1s">
         <!-- 検索ボックス -->
         <div class="mb-4">
           <input 

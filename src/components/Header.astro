@@ -22,7 +22,6 @@ const isActive = (path: string) => {
         <path d="M2 17L12 22L22 17"/>
         <path d="M2 12L12 17L22 12"/>
       </svg>
-      UBO SITE
     </a>
 
     <!-- デスクトップナビゲーション -->
@@ -32,28 +31,28 @@ const isActive = (path: string) => {
         class={`nav-link motion-preset-slide-down-sm ${isActive('/') ? 'active' : ''}`}
         style="animation-delay: 0.1s"
       >
-        ホーム
+        HOME
       </a>
       <a 
         href="/blog" 
         class={`nav-link motion-preset-slide-down-sm ${isActive('/blog') ? 'active' : ''}`}
         style="animation-delay: 0.2s"
       >
-        ブログ
+        BLOG
       </a>
       <a 
         href="/works" 
         class={`nav-link motion-preset-slide-down-sm ${isActive('/works') ? 'active' : ''}`}
         style="animation-delay: 0.3s"
       >
-        ポートフォリオ
+        WORKS
       </a>
       <a 
         href="/link" 
         class={`nav-link motion-preset-slide-down-sm ${isActive('/link') ? 'active' : ''}`}
         style="animation-delay: 0.4s"
       >
-        リンク
+        LINK
       </a>
     </div>
 
@@ -84,25 +83,25 @@ const isActive = (path: string) => {
           href="/" 
           class={`mobile-nav-link ${isActive('/') ? 'active' : ''}`}
         >
-          🏠 ホーム
+          HOME
         </a>
         <a 
           href="/blog" 
           class={`mobile-nav-link ${isActive('/blog') ? 'active' : ''}`}
         >
-          📝 ブログ
+          BLOG
         </a>
         <a 
           href="/works" 
           class={`mobile-nav-link ${isActive('/works') ? 'active' : ''}`}
         >
-          💼 ポートフォリオ
+          WORKS
         </a>
         <a 
           href="/link" 
           class={`mobile-nav-link ${isActive('/link') ? 'active' : ''}`}
         >
-          🔗 リンク
+          LINK
         </a>
       </div>
     </div>

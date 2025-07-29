@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Layout from '@layouts/Layout.astro';
 import TableOfContents from '@components/TableOfContents.astro';
+import SocialShare from '@components/SocialShare.astro';
 import { extractTocFromMarkdown } from '@utils/toc';
 
 export async function getStaticPaths() {
@@ -76,6 +77,12 @@ const toc = extractTocFromMarkdown(post.body);
           <div class="prose prose-base sm:prose-lg lg:prose-xl prose-invert max-w-full motion-preset-slide-up-sm overflow-hidden" style="animation-delay: 0.2s">
             <Content />
           </div>
+          
+          <SocialShare 
+            title={post.data.title}
+            url={`${Astro.site}blog/${post.data.slug}`}
+            description={post.data.description}
+          />
         </article>
         
         <!-- サイドバー（目次） -->

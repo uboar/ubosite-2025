@@ -1,5 +1,22 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import { getCollection } from "astro:content";
+
+// フィーチャーされたブログとポートフォリオを取得
+const allBlogPosts = await getCollection("blog");
+const allWorks = await getCollection("works");
+
+const featuredBlogPosts = allBlogPosts
+  .filter(post => post.data.featured === true)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 2);
+
+const featuredWorks = allWorks
+  .filter(work => work.data.featured === true)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 2);
+
+  console.log(featuredWorks, featuredBlogPosts);
 ---
 
 <Layout 
@@ -13,23 +30,19 @@ import Layout from "@layouts/Layout.astro";
     <section class="hero-section py-20 text-center motion-preset-slide-up-sm">
       <div class="hero-content">
         <h1 class="hero-title">
-          <span class="block text-6xl font-bold mb-4 motion-preset-typewriter">
-            Creative
-          </span>
-          <span class="block text-4xl font-light text-orange-accent motion-preset-typewriter" style="animation-delay: 1s">
-            Portfolio & Blog
+          <span class="block text-5xl lg:text-6xl font-bold mb-4 motion-preset-typewriter">
+            WRITE SOMETHING ANYWAY
           </span>
         </h1>
-        <p class="hero-description text-xl text-text-secondary max-w-2xl mx-auto mb-8 motion-preset-slide-up-sm" style="animation-delay: 1.5s">
-          技術記事、作品紹介、プロジェクト情報を発信する<br>
-          マルチクリエイター向けのサイト
-        </p>
-        <div class="hero-buttons flex-container flex-center gap-4 motion-preset-slide-up-sm" style="animation-delay: 2s">
-          <a href="/blog" class="btn btn-primary btn-lg">
-            📝 ブログを読む
+        <div class="hero-buttons flex-container flex-center gap-4 motion-preset-slide-up-sm" style="animation-delay: 0.5s">
+          <a href="/works" class="btn btn-secondary btn-lg w-32">
+            WORKS
           </a>
-          <a href="/works" class="btn btn-secondary btn-lg">
-            💼 作品を見る
+          <a href="/link" class="btn btn-primary btn-lg w-32">
+            LINK
+          </a>
+          <a href="/blog" class="btn btn-secondary btn-lg w-32">
+            BLOG
           </a>
         </div>
       </div>
@@ -37,6 +50,156 @@ import Layout from "@layouts/Layout.astro";
 
     <!-- 主要セクション -->
     <section class="main-sections py-16">
+        <h1 class="text-center">
+          <span class="block text-4xl font-bold mb-4 motion-preset-typewriter">
+            FEATURED
+          </span>
+        </h1>
+      <!-- おすすめブログ記事 -->
+      {featuredBlogPosts.length > 0 && (
+        <div class="featured-section mb-16">
+          
+          <div class={`grid gap-6 ${
+            featuredBlogPosts.length === 1 
+              ? 'grid-cols-1 max-w-md mx-auto' 
+              : 'grid-cols-1 md:grid-cols-2'
+          }`}>
+            {featuredBlogPosts.map((post, index) => (
+              <article class="card motion-preset-slide-up-sm" style={`animation-delay: ${0.2 + index * 0.1}s`}>
+                <header class="mb-4">
+                  <h3 class="text-xl font-semibold mb-2">
+                    <a href={`/blog/${post.data.slug}`} class="text-orange-main hover:text-orange-light transition-colors">
+                      {post.data.title}
+                    </a>
+                  </h3>
+                  <time class="text-sm text-text-muted" datetime={post.data.pubDate.toISOString()}>
+                    {post.data.pubDate.toLocaleDateString('ja-JP')}
+                  </time>
+                </header>
+                
+                {post.data.description && (
+                  <p class="text-text-secondary mb-4 line-clamp-3">{post.data.description}</p>
+                )}
+                
+                {post.data.tags && post.data.tags.length > 0 && (
+                  <div class="flex flex-wrap gap-2">
+                    {post.data.tags.slice(0, 3).map((tag) => (
+                      <span class="blog-card-tag">{tag}</span>
+                    ))}
+                  </div>
+                )}
+              </article>
+            ))}
+          </div>
+          
+          <div class="text-center mt-8">
+            <a href="/blog" class="btn btn-outline motion-preset-slide-up-sm" style="animation-delay: 0.5s">
+              すべての記事を見る →
+            </a>
+          </div>
+        </div>
+      )}
+      
+      <!-- おすすめポートフォリオ -->
+      {featuredWorks.length > 0 && (
+        <div class="featured-section">
+          
+          <div class={`grid gap-6 ${
+            featuredWorks.length === 1 
+              ? 'grid-cols-1 max-w-md mx-auto' 
+              : 'grid-cols-1 md:grid-cols-2'
+          }`}>
+            {featuredWorks.map((work, index) => (
+              work.data.projectUrl ? (
+                <a 
+                  href={work.data.projectUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  class="card motion-preset-slide-up-sm hover:scale-[1.02] transition-transform duration-300 group block"
+                  style={`animation-delay: ${0.2 + index * 0.1}s`}
+                >
+                  {work.data.image && (
+                    <div class="mb-4">
+                      <img 
+                        src={work.data.image.url} 
+                        alt={work.data.image.alt}
+                        class="w-full h-48 object-cover rounded-lg group-hover:brightness-110 transition-all duration-300"
+                      />
+                    </div>
+                  )}
+                  
+                  <header class="mb-4">
+                    <h3 class="text-xl font-semibold text-orange-main mb-2 group-hover:text-orange-light transition-colors">
+                      {work.data.title}
+                      <svg class="inline-block w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                      </svg>
+                    </h3>
+                    <time class="text-sm text-text-muted" datetime={work.data.pubDate.toISOString()}>
+                      {work.data.pubDate.toLocaleDateString('ja-JP')}
+                    </time>
+                  </header>
+                  
+                  {work.data.description && (
+                    <p class="text-text-secondary mb-4 line-clamp-3">{work.data.description}</p>
+                  )}
+                  
+                  {work.data.tags && work.data.tags.length > 0 && (
+                    <div class="flex flex-wrap gap-2">
+                      {work.data.tags.slice(0, 3).map((tag) => (
+                        <span class="project-card-tech-tag">{tag}</span>
+                      ))}
+                    </div>
+                  )}
+                </a>
+              ) : (
+                <a 
+                  href={`/works/${work.data.slug}`}
+                  class="card motion-preset-slide-up-sm hover:scale-[1.02] transition-transform duration-300 group block"
+                  style={`animation-delay: ${0.2 + index * 0.1}s`}
+                >
+                  {work.data.image && (
+                    <div class="mb-4">
+                      <img 
+                        src={work.data.image.url} 
+                        alt={work.data.image.alt}
+                        class="w-full h-48 object-cover rounded-lg group-hover:brightness-110 transition-all duration-300"
+                      />
+                    </div>
+                  )}
+                  
+                  <header class="mb-4">
+                    <h3 class="text-xl font-semibold text-orange-main mb-2 group-hover:text-orange-light transition-colors">
+                      {work.data.title}
+                    </h3>
+                    <time class="text-sm text-text-muted" datetime={work.data.pubDate.toISOString()}>
+                      {work.data.pubDate.toLocaleDateString('ja-JP')}
+                    </time>
+                  </header>
+                  
+                  {work.data.description && (
+                    <p class="text-text-secondary mb-4 line-clamp-3">{work.data.description}</p>
+                  )}
+                  
+                  {work.data.tags && work.data.tags.length > 0 && (
+                    <div class="flex flex-wrap gap-2">
+                      {work.data.tags.slice(0, 3).map((tag) => (
+                        <span class="project-card-tech-tag">{tag}</span>
+                      ))}
+                    </div>
+                  )}
+                </a>
+              )
+            ))}
+          </div>
+          
+          <div class="text-center mt-8">
+            <a href="/works" class="btn btn-outline motion-preset-slide-up-sm" style="animation-delay: 0.5s">
+              すべてのプロジェクトを見る →
+            </a>
+          </div>
+        </div>
+      )}
     </section>
   </div>
 
@@ -59,6 +222,18 @@ import Layout from "@layouts/Layout.astro";
       background: rgba(255, 107, 53, 0.05);
       border-radius: 0.5rem;
       border: 1px solid rgba(255, 107, 53, 0.1);
+    }
+    
+    .section-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .line-clamp-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
   </style>
 </Layout>

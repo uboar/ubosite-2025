@@ -95,7 +95,6 @@
 .nav-link:hover {
   color: var(--orange-light);
   background: rgba(255, 107, 53, 0.1);
-  box-shadow: var(--glow-primary);
   transform: translateY(-2px);
 }
 
@@ -103,7 +102,6 @@
 .nav-link.active {
   color: var(--orange-main);
   background: rgba(255, 107, 53, 0.15);
-  box-shadow: var(--glow-primary);
 }
 
 .nav-link.active::after {
