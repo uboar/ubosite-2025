@@ -15,8 +15,6 @@ const featuredWorks = allWorks
   .filter(work => work.data.featured === true)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 2);
-
-  console.log(featuredWorks, featuredBlogPosts);
 ---
 
 <Layout 
