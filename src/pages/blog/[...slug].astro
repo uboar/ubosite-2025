@@ -1,0 +1,99 @@
+---
+import { getCollection, render } from 'astro:content';
+import "@styles/global.css";
+import Header from '@components/Header.astro';
+import TableOfContents from '@components/TableOfContents.astro';
+import { extractTocFromMarkdown } from '@utils/toc';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map(post => ({
+    params: { slug: post.data.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+// 目次を抽出
+const toc = extractTocFromMarkdown(post.body);
+---
+
+<html lang="ja">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{post.data.title}</title>
+		{post.data.description && (
+			<meta name="description" content={post.data.description} />
+		)}
+	</head>
+	<body class="bg-gray-50 min-h-screen">
+		<Header currentPath="/blog" />
+		<main class="p-8">
+			<div class="max-w-6xl mx-auto">
+				<nav class="mb-8 max-w-4xl">
+					<a href="/blog/" class="text-blue-600 hover:text-blue-800">← ブログ一覧に戻る</a>
+				</nav>
+			
+			<div class="lg:flex lg:gap-8">
+				<!-- メインコンテンツ -->
+				<article class="lg:w-3/4 lg:max-w-4xl">
+				<header class="mb-8">
+					<h1 class="text-4xl font-bold mb-4">{post.data.title}</h1>
+					
+					<div class="text-gray-600 mb-4">
+						<time datetime={post.data.pubDate.toISOString()}>
+							公開日: {post.data.pubDate.toLocaleDateString('ja-JP')}
+						</time>
+						{post.data.updatedDate && (
+							<span class="ml-4">
+								更新日: {post.data.updatedDate.toLocaleDateString('ja-JP')}
+							</span>
+						)}
+					</div>
+					
+					{post.data.description && (
+						<p class="text-lg text-gray-700 mb-6">{post.data.description}</p>
+					)}
+					
+					{post.data.tags && post.data.tags.length > 0 && (
+						<div class="flex flex-wrap gap-2 mb-6">
+							{post.data.tags.map((tag) => (
+								<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+									{tag}
+								</span>
+							))}
+						</div>
+					)}
+					
+					{post.data.image && (
+						<div class="mb-6">
+							<img 
+								src={post.data.image.url} 
+								alt={post.data.image.alt}
+								class="w-full h-auto rounded-lg shadow-md"
+							/>
+						</div>
+					)}
+				</header>
+				
+					<div class="prose prose-lg max-w-none">
+						<Content />
+					</div>
+				</article>
+				
+				<!-- サイドバー（目次） -->
+				<aside class="lg:w-1/4 lg:pl-4">
+					<div class="lg:sticky lg:top-8">
+						<TableOfContents toc={toc} />
+					</div>
+				</aside>
+				</div>
+			</div>
+		</main>
+	</body>
+</html>

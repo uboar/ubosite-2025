@@ -1,0 +1,255 @@
+---
+import { getCollection } from "astro:content";
+import "@styles/global.css";
+import Header from "@components/Header.astro";
+
+const pageTitle = "ポートフォリオ";
+const allWorks = await getCollection("works");
+const sortedWorks = allWorks.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+// 全てのタグを抽出
+const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
+
+---
+
+<html lang="ja">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{pageTitle}</title>
+	</head>
+	<body class="bg-gray-50 min-h-screen">
+		<Header currentPath="/works" />
+		<main class="p-8">
+			<div class="max-w-4xl mx-auto">
+				<h1 class="text-3xl font-bold mb-8">{pageTitle}</h1>
+			
+			<!-- 検索・フィルターエリア -->
+			<div class="mb-8 space-y-4">
+				<!-- 検索ボックス -->
+				<div>
+					<input 
+						id="search-input"
+						type="text" 
+						placeholder="プロジェクトを検索..."
+						class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+					/>
+				</div>
+				
+				<!-- タグフィルター -->
+				<div>
+					<p class="text-sm text-gray-600 mb-2">タグで絞り込み:</p>
+					<div class="flex flex-wrap gap-2">
+						<button 
+							id="tag-all"
+							class="tag-filter px-3 py-1 rounded-full text-sm border transition-colors bg-blue-500 text-white"
+							data-tag="all"
+						>
+							全て
+						</button>
+						{allTags.map((tag) => (
+							<button 
+								class="tag-filter px-3 py-1 rounded-full text-sm border transition-colors border-gray-300 hover:bg-gray-100"
+								data-tag={tag}
+							>
+								{tag}
+							</button>
+						))}
+					</div>
+				</div>
+				
+				
+				<!-- 結果表示 -->
+				<div id="results-count" class="text-sm text-gray-600"></div>
+			</div>
+
+			<!-- プロジェクト一覧 -->
+			<div id="works-container">
+				{sortedWorks.length === 0 ? (
+					<p class="text-gray-600">プロジェクトがまだありません。</p>
+				) : (
+					<div class="grid gap-6" id="works-list">
+						{sortedWorks.map((work) => (
+							<article 
+								class="work-item border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
+								data-title={work.data.title.toLowerCase()}
+								data-description={work.data.description?.toLowerCase() || ''}
+								data-tags={work.data.tags.join(',')}
+								data-status={work.data.status}
+							>
+								<header class="mb-4">
+									<div class="flex items-start justify-between mb-2">
+										<h2 class="text-xl font-semibold">
+											<a href={`/works/${work.data.slug}`} class="text-blue-600 hover:text-blue-800">
+												{work.data.title}
+											</a>
+										</h2>
+										<div class="flex items-center gap-2">
+											{work.data.status === 'completed' && (
+												<span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">完了</span>
+											)}
+											{work.data.status === 'in-progress' && (
+												<span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">進行中</span>
+											)}
+											{work.data.status === 'archived' && (
+												<span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">アーカイブ</span>
+											)}
+										</div>
+									</div>
+									
+									<div class="text-sm text-gray-500 mb-4">
+										<time datetime={work.data.pubDate.toISOString()}>
+											{work.data.pubDate.toLocaleDateString('ja-JP')}
+										</time>
+										{work.data.updatedDate && (
+											<span class="ml-2">
+												(更新: {work.data.updatedDate.toLocaleDateString('ja-JP')})
+											</span>
+										)}
+									</div>
+									
+									<!-- プロジェクト画像 -->
+									{work.data.image && (
+										<div class="mb-4">
+											<img 
+												src={work.data.image.url} 
+												alt={work.data.image.alt}
+												class="w-full h-48 object-cover rounded-lg"
+											/>
+										</div>
+									)}
+								</header>
+								
+								{work.data.description && (
+									<p class="text-gray-700 mb-4">{work.data.description}</p>
+								)}
+								
+								
+								<!-- タグ -->
+								{work.data.tags && work.data.tags.length > 0 && (
+									<div class="mb-4">
+										<div class="flex flex-wrap gap-2">
+											{work.data.tags.map((tag) => (
+												<span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-sm">
+													{tag}
+												</span>
+											))}
+										</div>
+									</div>
+								)}
+								
+								<!-- プロジェクトリンク -->
+								{work.data.projectUrl && (
+									<div class="flex flex-wrap gap-3">
+										<a 
+											href={work.data.projectUrl} 
+											target="_blank" 
+											rel="noopener noreferrer"
+											class="inline-flex items-center px-3 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition-colors"
+										>
+											🔗 プロジェクトを見る
+										</a>
+									</div>
+								)}
+							</article>
+						))}
+					</div>
+				)}
+				
+				<!-- 結果がない場合のメッセージ -->
+				<div id="no-results" class="hidden">
+					<p class="text-gray-600 text-center py-8">検索条件に一致するプロジェクトが見つかりませんでした。</p>
+				</div>
+				</div>
+			</div>
+		</main>
+		
+		<script>
+			// フィルタリング機能
+			const searchInput = document.getElementById('search-input');
+			const tagFilters = document.querySelectorAll('.tag-filter');
+			const workItems = document.querySelectorAll('.work-item');
+			const resultsCount = document.getElementById('results-count');
+			const noResults = document.getElementById('no-results');
+			const worksList = document.getElementById('works-list');
+			
+			let currentTag = 'all';
+			let currentSearch = '';
+			
+			// 検索機能
+			searchInput?.addEventListener('input', (e) => {
+				const target = e.target as HTMLInputElement;
+				currentSearch = target.value.toLowerCase();
+				filterWorks();
+			});
+			
+			// タグフィルター機能
+			tagFilters.forEach(button => {
+				button.addEventListener('click', (e) => {
+					// アクティブなボタンのスタイルを更新
+					tagFilters.forEach(btn => {
+						btn.classList.remove('bg-blue-500', 'text-white');
+						btn.classList.add('border-gray-300', 'hover:bg-gray-100');
+					});
+					
+					const target = e.target as HTMLElement;
+					target.classList.add('bg-blue-500', 'text-white');
+					target.classList.remove('border-gray-300', 'hover:bg-gray-100');
+					
+					currentTag = target.dataset.tag || 'all';
+					filterWorks();
+				});
+			});
+			
+			
+			// フィルタリング実行
+			function filterWorks() {
+				let visibleCount = 0;
+				
+				workItems.forEach(work => {
+					const workElement = work as HTMLElement;
+					const title = workElement.dataset.title || '';
+					const description = workElement.dataset.description || '';
+					const tags = workElement.dataset.tags?.split(',') || [];
+					
+					// 検索条件チェック
+					const matchesSearch = currentSearch === '' || 
+						title.includes(currentSearch) || 
+						description.includes(currentSearch);
+					
+					// タグ条件チェック
+					const matchesTag = currentTag === 'all' || tags.includes(currentTag);
+					
+					
+					if (matchesSearch && matchesTag) {
+						workElement.style.display = 'block';
+						visibleCount++;
+					} else {
+						workElement.style.display = 'none';
+					}
+				});
+				
+				// 結果数表示
+				if (resultsCount) {
+					resultsCount.textContent = `${visibleCount}件のプロジェクトが見つかりました`;
+				}
+				
+				// 結果がない場合の表示切り替え
+				if (visibleCount === 0) {
+					if (worksList) worksList.style.display = 'none';
+					if (noResults) noResults.classList.remove('hidden');
+				} else {
+					if (worksList) worksList.style.display = 'block';
+					if (noResults) noResults.classList.add('hidden');
+				}
+			}
+			
+			// 初期表示
+			filterWorks();
+		</script>
+	</body>
+</html>

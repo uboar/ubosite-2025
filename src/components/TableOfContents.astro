@@ -1,0 +1,144 @@
+---
+import type { TocItem } from '../utils/toc';
+
+interface Props {
+  toc: TocItem[];
+}
+
+const { toc } = Astro.props;
+---
+
+{toc.length > 0 && (
+  <div class="toc-container bg-gray-50 border border-gray-200 rounded-lg p-4 mb-8">
+    <h2 class="text-lg font-semibold mb-4 text-gray-800">目次</h2>
+    <nav class="toc-nav">
+      <ul class="space-y-2">
+        {toc.map((item) => (
+          <li 
+            class={`toc-item toc-level-${item.level}`}
+            style={`margin-left: ${(item.level - 1) * 1}rem`}
+          >
+            <a 
+              href={`#${item.id}`}
+              class="toc-link block text-sm text-gray-600 hover:text-blue-600 transition-colors duration-200 py-1 hover:underline"
+              data-target={item.id}
+            >
+              {item.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+)}
+
+<script>
+  // スムーズスクロール機能
+  document.addEventListener('DOMContentLoaded', () => {
+    const tocLinks = document.querySelectorAll('.toc-link');
+    
+    tocLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        const targetId = (e.target as HTMLAnchorElement).dataset.target;
+        const targetElement = document.getElementById(targetId || '');
+        
+        if (targetElement) {
+          // ヘッダーの高さを考慮したオフセット
+          const offset = 20;
+          const elementPosition = targetElement.offsetTop - offset;
+          
+          window.scrollTo({
+            top: elementPosition,
+            behavior: 'smooth'
+          });
+          
+          // URLを更新（履歴には追加しない）
+          history.replaceState(null, '', `#${targetId}`);
+        }
+      });
+    });
+    
+    // 現在の見出し位置をハイライト
+    function highlightCurrentSection() {
+      const headings = document.querySelectorAll('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]');
+      const tocLinks = document.querySelectorAll('.toc-link');
+      
+      let currentId = '';
+      const scrollPosition = window.scrollY + 100; // オフセット
+      
+      // 現在のスクロール位置に最も近い見出しを見つける
+      for (let i = headings.length - 1; i >= 0; i--) {
+        const heading = headings[i] as HTMLElement;
+        if (heading.offsetTop <= scrollPosition) {
+          currentId = heading.id;
+          break;
+        }
+      }
+      
+      // すべてのリンクからアクティブクラスを削除
+      tocLinks.forEach(link => {
+        link.classList.remove('font-semibold', 'text-blue-600');
+        link.classList.add('text-gray-600');
+      });
+      
+      // 現在のセクションのリンクをハイライト
+      if (currentId) {
+        const activeLink = document.querySelector(`[data-target="${currentId}"]`);
+        if (activeLink) {
+          activeLink.classList.add('font-semibold', 'text-blue-600');
+          activeLink.classList.remove('text-gray-600');
+        }
+      }
+    }
+    
+    // スクロール時にハイライトを更新
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          highlightCurrentSection();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+    
+    // 初期ハイライト
+    highlightCurrentSection();
+  });
+</script>
+
+<style>
+  /* 目次のレベル別スタイル */
+  .toc-level-1 {
+    font-size: 0.875rem;
+  }
+  
+  .toc-level-2 {
+    font-size: 0.8125rem;
+  }
+  
+  .toc-level-3 {
+    font-size: 0.75rem;
+  }
+  
+  .toc-level-4,
+  .toc-level-5,
+  .toc-level-6 {
+    font-size: 0.6875rem;
+    opacity: 0.8;
+  }
+  
+  .toc-container {
+    position: sticky;
+    top: 20px;
+  }
+  
+  @media (max-width: 1024px) {
+    .toc-container {
+      position: static;
+    }
+  }
+</style>

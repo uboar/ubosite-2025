@@ -1,0 +1,133 @@
+---
+import { getCollection, render } from 'astro:content';
+import "@styles/global.css";
+import Header from '@components/Header.astro';
+import TableOfContents from '@components/TableOfContents.astro';
+import { extractTocFromMarkdown } from '@utils/toc';
+
+export async function getStaticPaths() {
+  const works = await getCollection('works');
+  return works.map(work => ({
+    params: { slug: work.data.slug },
+    props: { work },
+  }));
+}
+
+const { work } = Astro.props;
+const { Content } = await render(work);
+
+// 目次を抽出
+const toc = extractTocFromMarkdown(work.body);
+---
+
+<html lang="ja">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{work.data.title}</title>
+		{work.data.description && (
+			<meta name="description" content={work.data.description} />
+		)}
+	</head>
+	<body class="bg-gray-50 min-h-screen">
+		<Header currentPath="/works" />
+		<main class="p-8">
+			<div class="max-w-6xl mx-auto">
+				<nav class="mb-8 max-w-4xl">
+					<a href="/works/" class="text-blue-600 hover:text-blue-800">← ポートフォリオ一覧に戻る</a>
+				</nav>
+			
+			<div class="lg:flex lg:gap-8">
+				<!-- メインコンテンツ -->
+				<article class="lg:w-3/4 lg:max-w-4xl">
+					<header class="mb-8">
+						<h1 class="text-4xl font-bold mb-4">{work.data.title}</h1>
+						
+						<div class="flex items-center gap-4 mb-4">
+							<div class="text-gray-600">
+								<time datetime={work.data.pubDate.toISOString()}>
+									公開日: {work.data.pubDate.toLocaleDateString('ja-JP')}
+								</time>
+								{work.data.updatedDate && (
+									<span class="ml-4">
+										更新日: {work.data.updatedDate.toLocaleDateString('ja-JP')}
+									</span>
+								)}
+							</div>
+							
+							<div class="flex items-center gap-2">
+								{work.data.status === 'completed' && (
+									<span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">完了</span>
+								)}
+								{work.data.status === 'in-progress' && (
+									<span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">進行中</span>
+								)}
+								{work.data.status === 'archived' && (
+									<span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">アーカイブ</span>
+								)}
+							</div>
+						</div>
+						
+						{work.data.description && (
+							<p class="text-lg text-gray-700 mb-6">{work.data.description}</p>
+						)}
+						
+						<!-- プロジェクトリンク -->
+						{work.data.projectUrl && (
+							<div class="flex flex-wrap gap-3 mb-6">
+								<a 
+									href={work.data.projectUrl} 
+									target="_blank" 
+									rel="noopener noreferrer"
+									class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+								>
+									🔗 プロジェクトを見る
+								</a>
+							</div>
+						)}
+						
+						
+						<!-- タグ -->
+						{work.data.tags && work.data.tags.length > 0 && (
+							<div class="mb-6">
+								<h3 class="text-sm font-medium text-gray-700 mb-2">タグ:</h3>
+								<div class="flex flex-wrap gap-2">
+									{work.data.tags.map((tag) => (
+										<span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+											{tag}
+										</span>
+									))}
+								</div>
+							</div>
+						)}
+						
+						<!-- プロジェクト画像 -->
+						{work.data.image && (
+							<div class="mb-6">
+								<img 
+									src={work.data.image.url} 
+									alt={work.data.image.alt}
+									class="w-full h-auto rounded-lg shadow-md"
+								/>
+							</div>
+						)}
+					</header>
+					
+					<div class="prose prose-lg max-w-none">
+						<Content />
+					</div>
+				</article>
+				
+				<!-- サイドバー（目次） -->
+				<aside class="lg:w-1/4 lg:pl-4">
+					<div class="lg:sticky lg:top-8">
+						<TableOfContents toc={toc} />
+					</div>
+				</aside>
+				</div>
+			</div>
+		</main>
+	</body>
+</html>

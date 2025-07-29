@@ -1,0 +1,39 @@
+---
+import "@styles/global.css";
+import Header from "@components/Header.astro";
+---
+
+<html lang="ja">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+	</head>
+	<body class="bg-gray-50 min-h-screen">
+		<Header currentPath="/" />
+		<main class="p-8">
+			<div class="max-w-4xl mx-auto">
+			<h1 class="text-4xl font-bold mb-8">Welcome to My Site</h1>
+			<div class="grid gap-6">
+				<section class="bg-white rounded-lg shadow-md p-6">
+					<h2 class="text-2xl font-semibold mb-4">最新のブログ記事</h2>
+					<p class="text-gray-600 mb-4">技術的な話題や日常について書いています。</p>
+					<a href="/blog" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded transition-colors duration-200">
+						ブログを見る
+					</a>
+				</section>
+				
+				<section class="bg-white rounded-lg shadow-md p-6">
+					<h2 class="text-2xl font-semibold mb-4">ポートフォリオ</h2>
+					<p class="text-gray-600 mb-4">これまでに制作したプロジェクトをご紹介します。</p>
+					<a href="/works" class="inline-block bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded transition-colors duration-200">
+						ポートフォリオを見る
+					</a>
+				</section>
+			</div>
+			</div>
+		</main>
+	</body>
+</html>
