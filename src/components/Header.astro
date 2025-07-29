@@ -13,126 +13,96 @@ const isActive = (path: string) => {
 };
 ---
 
-<header class="bg-white shadow-sm border-b border-gray-200">
-  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-16">
-      <!-- ロゴ/サイト名 -->
-      <div class="flex-shrink-0">
-        <a href="/" class="text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors">
-          My Site
-        </a>
-      </div>
+<header class="header" id="header">
+  <nav class="nav-container">
+    <!-- ロゴ/サイト名 -->
+    <a href="/" class="logo motion-preset-slide-down-sm">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2L2 7L12 12L22 7L12 2Z"/>
+        <path d="M2 17L12 22L22 17"/>
+        <path d="M2 12L12 17L22 12"/>
+      </svg>
+      UBO SITE
+    </a>
 
-      <!-- デスクトップナビゲーション -->
-      <div class="hidden md:block">
-        <div class="ml-10 flex items-baseline space-x-8">
-          <a 
-            href="/" 
-            class={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-              isActive('/') 
-                ? 'bg-blue-100 text-blue-700' 
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-            }`}
-          >
-            ホーム
-          </a>
-          <a 
-            href="/blog" 
-            class={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-              isActive('/blog') 
-                ? 'bg-blue-100 text-blue-700' 
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-            }`}
-          >
-            ブログ
-          </a>
-          <a 
-            href="/works" 
-            class={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-              isActive('/works') 
-                ? 'bg-blue-100 text-blue-700' 
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-            }`}
-          >
-            ポートフォリオ
-          </a>
-          <a 
-            href="/link" 
-            class={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-              isActive('/link') 
-                ? 'bg-blue-100 text-blue-700' 
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-            }`}
-          >
-            リンク
-          </a>
-        </div>
-      </div>
-
-      <!-- モバイルメニューボタン -->
-      <div class="md:hidden">
-        <button 
-          id="mobile-menu-button"
-          type="button" 
-          class="bg-gray-100 inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
-          aria-controls="mobile-menu" 
-          aria-expanded="false"
-        >
-          <span class="sr-only">メニューを開く</span>
-          <!-- ハンバーガーアイコン -->
-          <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-          <!-- 閉じるアイコン（初期は非表示） -->
-          <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
+    <!-- デスクトップナビゲーション -->
+    <div class="nav-menu">
+      <a 
+        href="/" 
+        class={`nav-link motion-preset-slide-down-sm ${isActive('/') ? 'active' : ''}`}
+        style="animation-delay: 0.1s"
+      >
+        ホーム
+      </a>
+      <a 
+        href="/blog" 
+        class={`nav-link motion-preset-slide-down-sm ${isActive('/blog') ? 'active' : ''}`}
+        style="animation-delay: 0.2s"
+      >
+        ブログ
+      </a>
+      <a 
+        href="/works" 
+        class={`nav-link motion-preset-slide-down-sm ${isActive('/works') ? 'active' : ''}`}
+        style="animation-delay: 0.3s"
+      >
+        ポートフォリオ
+      </a>
+      <a 
+        href="/link" 
+        class={`nav-link motion-preset-slide-down-sm ${isActive('/link') ? 'active' : ''}`}
+        style="animation-delay: 0.4s"
+      >
+        リンク
+      </a>
     </div>
 
+    <!-- モバイルメニューボタン -->
+    <button 
+      id="mobile-menu-button"
+      type="button" 
+      class="mobile-menu-button motion-preset-slide-down-sm"
+      aria-controls="mobile-menu" 
+      aria-expanded="false"
+      style="animation-delay: 0.1s"
+    >
+      <span class="sr-only">メニューを開く</span>
+      <!-- ハンバーガーアイコン -->
+      <svg class="hamburger-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+      <!-- 閉じるアイコン（初期は非表示） -->
+      <svg class="close-icon hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
     <!-- モバイルメニュー -->
-    <div class="md:hidden hidden" id="mobile-menu">
-      <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gray-50 border-t border-gray-200">
+    <div class="mobile-menu" id="mobile-menu">
+      <div class="mobile-menu-content">
         <a 
           href="/" 
-          class={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-            isActive('/') 
-              ? 'bg-blue-100 text-blue-700' 
-              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-          }`}
+          class={`mobile-nav-link ${isActive('/') ? 'active' : ''}`}
         >
-          ホーム
+          🏠 ホーム
         </a>
         <a 
           href="/blog" 
-          class={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-            isActive('/blog') 
-              ? 'bg-blue-100 text-blue-700' 
-              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-          }`}
+          class={`mobile-nav-link ${isActive('/blog') ? 'active' : ''}`}
         >
-          ブログ
+          📝 ブログ
         </a>
         <a 
           href="/works" 
-          class={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-            isActive('/works') 
-              ? 'bg-blue-100 text-blue-700' 
-              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-          }`}
+          class={`mobile-nav-link ${isActive('/works') ? 'active' : ''}`}
         >
-          ポートフォリオ
+          💼 ポートフォリオ
         </a>
         <a 
           href="/link" 
-          class={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-            isActive('/link') 
-              ? 'bg-blue-100 text-blue-700' 
-              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-          }`}
+          class={`mobile-nav-link ${isActive('/link') ? 'active' : ''}`}
         >
-          リンク
+          🔗 リンク
         </a>
       </div>
     </div>
@@ -140,47 +110,70 @@ const isActive = (path: string) => {
 </header>
 
 <script>
-  // モバイルメニューの開閉機能
+  // モバイルメニューの開閉機能とスクロール検知
+  const header = document.getElementById('header');
   const mobileMenuButton = document.getElementById('mobile-menu-button');
   const mobileMenu = document.getElementById('mobile-menu');
   
+  // スクロール検知でヘッダースタイル変更
+  let lastScrollY = window.scrollY;
+  
+  window.addEventListener('scroll', () => {
+    const currentScrollY = window.scrollY;
+    
+    if (currentScrollY > 100) {
+      header?.classList.add('scrolled');
+    } else {
+      header?.classList.remove('scrolled');
+    }
+    
+    lastScrollY = currentScrollY;
+  });
+  
+  // モバイルメニュー制御
   if (mobileMenuButton && mobileMenu) {
     mobileMenuButton.addEventListener('click', () => {
       const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
-      const hamburgerIcon = mobileMenuButton.querySelector('svg:first-of-type');
-      const closeIcon = mobileMenuButton.querySelector('svg:last-of-type');
+      const hamburgerIcon = mobileMenuButton.querySelector('.hamburger-icon');
+      const closeIcon = mobileMenuButton.querySelector('.close-icon');
       
       // メニューの表示/非表示を切り替え
       if (isExpanded) {
-        mobileMenu.classList.add('hidden');
+        mobileMenu.classList.remove('open');
         mobileMenuButton.setAttribute('aria-expanded', 'false');
         hamburgerIcon?.classList.remove('hidden');
-        hamburgerIcon?.classList.add('block');
-        closeIcon?.classList.remove('block');
         closeIcon?.classList.add('hidden');
       } else {
-        mobileMenu.classList.remove('hidden');
+        mobileMenu.classList.add('open');
         mobileMenuButton.setAttribute('aria-expanded', 'true');
-        hamburgerIcon?.classList.remove('block');
         hamburgerIcon?.classList.add('hidden');
         closeIcon?.classList.remove('hidden');
-        closeIcon?.classList.add('block');
       }
     });
 
     // リンクをクリックしたらモバイルメニューを閉じる
-    const mobileLinks = mobileMenu.querySelectorAll('a');
+    const mobileLinks = mobileMenu.querySelectorAll('.mobile-nav-link');
     mobileLinks.forEach(link => {
       link.addEventListener('click', () => {
-        mobileMenu.classList.add('hidden');
+        mobileMenu.classList.remove('open');
         mobileMenuButton.setAttribute('aria-expanded', 'false');
-        const hamburgerIcon = mobileMenuButton.querySelector('svg:first-of-type');
-        const closeIcon = mobileMenuButton.querySelector('svg:last-of-type');
+        const hamburgerIcon = mobileMenuButton.querySelector('.hamburger-icon');
+        const closeIcon = mobileMenuButton.querySelector('.close-icon');
         hamburgerIcon?.classList.remove('hidden');
-        hamburgerIcon?.classList.add('block');
-        closeIcon?.classList.remove('block');
         closeIcon?.classList.add('hidden');
       });
+    });
+
+    // メニュー外クリックで閉じる
+    document.addEventListener('click', (e) => {
+      if (!header?.contains(e.target as Node)) {
+        mobileMenu.classList.remove('open');
+        mobileMenuButton.setAttribute('aria-expanded', 'false');
+        const hamburgerIcon = mobileMenuButton.querySelector('.hamburger-icon');
+        const closeIcon = mobileMenuButton.querySelector('.close-icon');
+        hamburgerIcon?.classList.remove('hidden');
+        closeIcon?.classList.add('hidden');
+      }
     });
   }
 </script>

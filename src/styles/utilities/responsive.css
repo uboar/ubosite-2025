@@ -1,0 +1,189 @@
+/* レスポンシブグリッドシステム */
+
+/* Mobile First 設計 */
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* ブレークポイント */
+@media (min-width: 640px) {
+  .container {
+    max-width: 640px;
+    padding: 0 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1024px;
+    padding: 0 3rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  .container {
+    max-width: 1280px;
+    padding: 0 4rem;
+  }
+}
+
+/* フレックスボックスユーティリティ */
+.flex-container {
+  display: flex;
+  gap: 1rem;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.flex-center {
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  justify-content: space-between;
+}
+
+.flex-start {
+  justify-content: flex-start;
+}
+
+.flex-end {
+  justify-content: flex-end;
+}
+
+/* グリッドシステム */
+.grid-container {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr;
+}
+
+/* モバイル: 1カラム */
+@media (max-width: 639px) {
+  .grid-2-col,
+  .grid-3-col,
+  .grid-4-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* タブレット: 2カラム */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .grid-2-col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .grid-3-col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .grid-4-col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* デスクトップ: フルグリッド */
+@media (min-width: 1024px) {
+  .grid-2-col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .grid-3-col {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .grid-4-col {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* アスペクト比 */
+.aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
+.aspect-video {
+  aspect-ratio: 16 / 9;
+}
+
+.aspect-photo {
+  aspect-ratio: 4 / 3;
+}
+
+/* スペーシング */
+.spacing-xs { gap: 0.5rem; }
+.spacing-sm { gap: 0.75rem; }
+.spacing-md { gap: 1rem; }
+.spacing-lg { gap: 1.5rem; }
+.spacing-xl { gap: 2rem; }
+.spacing-2xl { gap: 3rem; }
+
+/* モバイル専用表示 */
+.mobile-only {
+  display: block;
+}
+
+@media (min-width: 640px) {
+  .mobile-only {
+    display: none;
+  }
+}
+
+/* デスクトップ専用表示 */
+.desktop-only {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .desktop-only {
+    display: block;
+  }
+}
+
+/* タッチインターフェース対応 */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* スクロール対応 */
+.scroll-container {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--orange-main) var(--bg-secondary);
+}
+
+.scroll-container::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 3px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background: var(--orange-main);
+  border-radius: 3px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb:hover {
+  background: var(--orange-light);
+}

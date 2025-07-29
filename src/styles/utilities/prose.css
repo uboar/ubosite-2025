@@ -1,0 +1,224 @@
+/* Prose（記事コンテンツ）用のスタイル */
+
+.prose {
+  color: var(--text-secondary);
+  line-height: 1.75;
+}
+
+/* すべての要素がコンテナからはみ出さないようにする */
+.prose * {
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* 見出し */
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  color: var(--text-primary);
+  font-weight: 700;
+  line-height: 1.25;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.prose h1 { font-size: 2.25rem; }
+.prose h2 { font-size: 1.875rem; }
+.prose h3 { font-size: 1.5rem; }
+.prose h4 { font-size: 1.25rem; }
+.prose h5 { font-size: 1.125rem; }
+.prose h6 { font-size: 1rem; }
+
+/* 段落 */
+.prose p {
+  margin-bottom: 1.25rem;
+  line-height: 1.75;
+}
+
+/* リンク */
+.prose a {
+  color: var(--orange-main);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: all 0.3s ease;
+}
+
+.prose a:hover {
+  color: var(--orange-light);
+  text-decoration-color: var(--orange-light);
+}
+
+/* リスト */
+.prose ul,
+.prose ol {
+  margin: 1.25rem 0;
+  padding-left: 1.5rem;
+}
+
+.prose li {
+  margin: 0.5rem 0;
+}
+
+.prose li > ul,
+.prose li > ol {
+  margin: 0.5rem 0;
+}
+
+/* コード */
+.prose code {
+  color: var(--orange-accent);
+  background-color: var(--bg-tertiary);
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  font-family: var(--font-family-mono);
+}
+
+.prose pre {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--bg-tertiary);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  color: var(--text-secondary);
+}
+
+/* 引用 */
+.prose blockquote {
+  border-left: 4px solid var(--orange-main);
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: var(--text-muted);
+  background-color: var(--bg-secondary);
+  padding: 1rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.prose blockquote p {
+  margin-bottom: 0;
+}
+
+/* テーブル */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  display: block;
+  white-space: nowrap;
+}
+
+.prose thead {
+  background-color: var(--bg-secondary);
+}
+
+.prose th,
+.prose td {
+  border: 1px solid var(--bg-tertiary);
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.prose th {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* 画像 */
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1.5rem 0;
+}
+
+/* 水平線 */
+.prose hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--orange-main), transparent);
+  margin: 2rem 0;
+}
+
+/* 強調 */
+.prose strong,
+.prose b {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.prose em,
+.prose i {
+  font-style: italic;
+  color: var(--orange-accent);
+}
+
+/* レスポンシブ調整 */
+@media (max-width: 639px) {
+  .prose {
+    font-size: 0.875rem;
+    line-height: 1.625;
+  }
+  
+  .prose h1 { font-size: 1.875rem; }
+  .prose h2 { font-size: 1.5rem; }
+  .prose h3 { font-size: 1.25rem; }
+  
+  .prose pre {
+    padding: 0.75rem;
+    margin: 1rem 0;
+    font-size: 0.8rem;
+  }
+  
+  .prose table {
+    font-size: 0.8rem;
+  }
+  
+  .prose th,
+  .prose td {
+    padding: 0.5rem;
+  }
+}
+
+/* 特別なコンテンツの処理 */
+.prose .youtube-embed,
+.prose .spotify-embed {
+  max-width: 100%;
+  margin: 1.5rem 0;
+}
+
+.prose .youtube-embed iframe,
+.prose .spotify-embed iframe {
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
+.prose .link-card {
+  margin: 1.5rem 0;
+  max-width: 100%;
+}
+
+/* フレックスボックスやグリッドの調整 */
+.prose .flex {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.prose .grid {
+  max-width: 100%;
+  overflow-x: auto;
+}

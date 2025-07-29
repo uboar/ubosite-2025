@@ -1,0 +1,336 @@
+/* ボタンコンポーネントスタイル */
+
+/* ベースボタンスタイル */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  min-height: 44px;
+  user-select: none;
+}
+
+.btn:focus {
+  outline: 2px solid var(--orange-main);
+  outline-offset: 2px;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* プライマリボタン */
+.btn-primary {
+  background: var(--gradient-primary);
+  color: var(--bg-primary);
+  border: 1px solid transparent;
+  box-shadow: var(--glow-primary);
+  font-weight: 600;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+.btn-primary:hover {
+  background: var(--gradient-secondary);
+  box-shadow: var(--glow-hover), var(--shadow-medium);
+  transform: translateY(-2px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: var(--glow-primary);
+}
+
+/* セカンダリボタン */
+.btn-secondary {
+  background: transparent;
+  color: var(--orange-main);
+  border: 2px solid var(--orange-main);
+}
+
+.btn-secondary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background: var(--orange-main);
+  transition: width 0.3s ease;
+  z-index: -1;
+}
+
+.btn-secondary:hover::before {
+  width: 100%;
+}
+
+.btn-secondary:hover {
+  color: var(--bg-primary);
+  border-color: var(--orange-light);
+  box-shadow: var(--glow-primary);
+  transform: translateY(-2px);
+}
+
+.btn-secondary:active {
+  transform: translateY(0);
+}
+
+/* アウトラインボタン */
+.btn-outline {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 107, 53, 0.3);
+}
+
+.btn-outline:hover {
+  background: rgba(255, 107, 53, 0.1);
+  color: var(--orange-light);
+  border-color: var(--orange-main);
+  transform: translateY(-1px);
+}
+
+/* ゴーストボタン */
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 107, 53, 0.05);
+  color: var(--orange-light);
+  border-color: rgba(255, 107, 53, 0.2);
+}
+
+/* 危険ボタン */
+.btn-danger {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  border: 1px solid transparent;
+}
+
+.btn-danger:hover {
+  background: linear-gradient(135deg, #f87171, #ef4444);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+  transform: translateY(-2px);
+}
+
+/* サイズバリエーション */
+.btn-xs {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  min-height: 32px;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  min-height: 36px;
+}
+
+.btn-lg {
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+  min-height: 52px;
+}
+
+.btn-xl {
+  padding: 1.25rem 2.5rem;
+  font-size: 1.25rem;
+  min-height: 60px;
+}
+
+/* フルワイドボタン */
+.btn-full {
+  width: 100%;
+}
+
+/* アイコンボタン */
+.btn-icon {
+  aspect-ratio: 1;
+  padding: 0.75rem;
+}
+
+.btn-icon.btn-sm {
+  padding: 0.5rem;
+}
+
+.btn-icon.btn-lg {
+  padding: 1rem;
+}
+
+/* リンクボタン */
+.btn-link {
+  background: transparent;
+  color: var(--orange-main);
+  border: none;
+  padding: 0.25rem 0.5rem;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: all 0.3s ease;
+}
+
+.btn-link:hover {
+  color: var(--orange-light);
+  text-decoration-color: var(--orange-light);
+  transform: none;
+  box-shadow: none;
+}
+
+/* フローティングアクションボタン */
+.btn-fab {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  color: var(--bg-primary);
+  border: none;
+  box-shadow: var(--shadow-strong), var(--glow-primary);
+  z-index: 40;
+  transition: all 0.3s ease;
+}
+
+.btn-fab:hover {
+  transform: scale(1.1) translateY(-2px);
+  box-shadow: var(--shadow-strong), var(--glow-hover);
+}
+
+.btn-fab:active {
+  transform: scale(1.05);
+}
+
+/* ボタングループ */
+.btn-group {
+  display: inline-flex;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.btn-group .btn {
+  border-radius: 0;
+  border-right: 1px solid rgba(255, 107, 53, 0.2);
+}
+
+.btn-group .btn:first-child {
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+}
+
+.btn-group .btn:last-child {
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  border-right: none;
+}
+
+.btn-group .btn:only-child {
+  border-radius: 0.5rem;
+  border-right: none;
+}
+
+/* ローディング状態 */
+.btn-loading {
+  position: relative;
+  color: transparent !important;
+}
+
+.btn-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+/* アニメーションクラス */
+.btn.motion-preset-pulse:hover {
+  animation: pulse-gentle 0.6s ease-out;
+}
+
+@keyframes pulse-gentle {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 639px) {
+  .btn-fab {
+    bottom: 1rem;
+    right: 1rem;
+    width: 48px;
+    height: 48px;
+  }
+  
+  .btn-group {
+    flex-direction: column;
+  }
+  
+  .btn-group .btn {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 107, 53, 0.2);
+  }
+  
+  .btn-group .btn:first-child {
+    border-radius: 0.5rem 0.5rem 0 0;
+  }
+  
+  .btn-group .btn:last-child {
+    border-radius: 0 0 0.5rem 0.5rem;
+    border-bottom: none;
+  }
+}
+
+/* ダークモード専用の調整 */
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .btn::before,
+  .btn-fab {
+    transition: none;
+    animation: none;
+  }
+  
+  .btn:hover {
+    transform: none;
+  }
+}

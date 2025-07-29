@@ -1,3 +1,19 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 @plugin "tailwindcss-motion";
+
+/* ベーススタイル */
+@import "./base/colors.css";
+@import "./base/typography.css";
+@import "./base/backgrounds.css";
+
+/* ユーティリティ */
+@import "./utilities/responsive.css";
+@import "./utilities/prose.css";
+
+/* レイアウト */
+@import "./layouts/header.css";
+
+/* コンポーネント */
+@import "./components/cards.css";
+@import "./components/buttons.css";

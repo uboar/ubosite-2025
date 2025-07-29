@@ -1,0 +1,80 @@
+/* SVGベースの背景パターン */
+
+/* メイン背景グラデーション */
+.bg-pattern-main {
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 138, 101, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(230, 74, 25, 0.05) 0%, transparent 50%),
+    linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+}
+
+/* ページごとの背景バリエーション（全て統一） */
+.bg-pattern-blog,
+.bg-pattern-works,
+.bg-pattern-links {
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 138, 101, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(230, 74, 25, 0.05) 0%, transparent 50%),
+    linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+}
+
+/* ノイズテクスチャオーバーレイ */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.03;
+  background-image: 
+    radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+}
+
+/* グラス効果 */
+.glass-effect {
+  background: rgba(26, 26, 26, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 107, 53, 0.1);
+}
+
+.glass-effect-strong {
+  background: rgba(26, 26, 26, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 107, 53, 0.2);
+}
+
+/* 動的パーティクル効果（CSSアニメーション） */
+.particles::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, rgba(255, 107, 53, 0.3), transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(255, 138, 101, 0.2), transparent),
+    radial-gradient(1px 1px at 90px 40px, rgba(255, 171, 64, 0.4), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(230, 74, 25, 0.3), transparent);
+  background-repeat: repeat;
+  background-size: 150px 150px;
+  animation: particle-float 20s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes particle-float {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-10px, -15px); }
+  50% { transform: translate(5px, -25px); }
+  75% { transform: translate(15px, -10px); }
+  100% { transform: translate(0, 0); }
+}

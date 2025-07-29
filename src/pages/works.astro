@@ -1,7 +1,6 @@
 ---
 import { getCollection } from "astro:content";
-import "@styles/global.css";
-import Header from "@components/Header.astro";
+import Layout from "@layouts/Layout.astro";
 
 const pageTitle = "ポートフォリオ";
 const allWorks = await getCollection("works");
@@ -11,76 +10,73 @@ const sortedWorks = allWorks.sort(
 
 // 全てのタグを抽出
 const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
-
 ---
 
-<html lang="ja">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{pageTitle}</title>
-	</head>
-	<body class="bg-gray-50 min-h-screen">
-		<Header currentPath="/works" />
-		<main class="p-8">
-			<div class="max-w-4xl mx-auto">
-				<h1 class="text-3xl font-bold mb-8">{pageTitle}</h1>
+<Layout 
+  title={`${pageTitle} - UBO SITE`}
+  description="これまでに制作したWebアプリケーション、モバイルアプリ、その他のプロジェクトをご紹介"
+  currentPath="/works"
+  backgroundPattern="main"
+>
+  <div class="container">
+    <div class="py-8">
+      <h1 class="text-4xl font-bold mb-8 motion-preset-slide-down-sm">{pageTitle}</h1>
 			
-			<!-- 検索・フィルターエリア -->
-			<div class="mb-8 space-y-4">
-				<!-- 検索ボックス -->
-				<div>
-					<input 
-						id="search-input"
-						type="text" 
-						placeholder="プロジェクトを検索..."
-						class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-					/>
-				</div>
-				
-				<!-- タグフィルター -->
-				<div>
-					<p class="text-sm text-gray-600 mb-2">タグで絞り込み:</p>
-					<div class="flex flex-wrap gap-2">
-						<button 
-							id="tag-all"
-							class="tag-filter px-3 py-1 rounded-full text-sm border transition-colors bg-blue-500 text-white"
-							data-tag="all"
-						>
-							全て
-						</button>
-						{allTags.map((tag) => (
-							<button 
-								class="tag-filter px-3 py-1 rounded-full text-sm border transition-colors border-gray-300 hover:bg-gray-100"
-								data-tag={tag}
-							>
-								{tag}
-							</button>
-						))}
-					</div>
-				</div>
-				
-				
-				<!-- 結果表示 -->
-				<div id="results-count" class="text-sm text-gray-600"></div>
-			</div>
+      <!-- 検索・フィルターエリア -->
+      <div class="card mb-8 motion-preset-slide-up-sm" style="animation-delay: 0.1s">
+        <!-- 検索ボックス -->
+        <div class="mb-4">
+          <input 
+            id="search-input"
+            type="text" 
+            placeholder="プロジェクトを検索..."
+            class="w-full px-4 py-3 bg-bg-secondary border border-orange-main/20 rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:border-orange-main focus:ring-2 focus:ring-orange-main/20 transition-all"
+          />
+        </div>
+        
+        <!-- タグフィルター -->
+        <div>
+          <p class="text-sm text-text-muted mb-3">タグで絞り込み:</p>
+          <div class="flex flex-wrap gap-2">
+            <button 
+              id="tag-all"
+              class="tag-filter btn btn-primary btn-sm"
+              data-tag="all"
+            >
+              全て
+            </button>
+            {allTags.map((tag) => (
+              <button 
+                class="tag-filter btn btn-outline btn-sm"
+                data-tag={tag}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
 
-			<!-- プロジェクト一覧 -->
-			<div id="works-container">
-				{sortedWorks.length === 0 ? (
-					<p class="text-gray-600">プロジェクトがまだありません。</p>
-				) : (
-					<div class="grid gap-6" id="works-list">
-						{sortedWorks.map((work) => (
-							<article 
-								class="work-item border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
-								data-title={work.data.title.toLowerCase()}
-								data-description={work.data.description?.toLowerCase() || ''}
-								data-tags={work.data.tags.join(',')}
-								data-status={work.data.status}
-							>
+      <!-- 結果表示 -->
+      <div id="results-count" class="text-sm text-text-muted mb-6"></div>
+
+      <!-- プロジェクト一覧 -->
+      <div id="works-container">
+        {sortedWorks.length === 0 ? (
+          <div class="card text-center py-12">
+            <p class="text-text-secondary text-lg">プロジェクトがまだありません。</p>
+          </div>
+        ) : (
+          <div class="grid-container grid-2-col spacing-lg" id="works-list">
+            {sortedWorks.map((work, index) => (
+              <article 
+                class="work-item project-card motion-preset-slide-up-sm"
+                data-title={work.data.title.toLowerCase()}
+                data-description={work.data.description?.toLowerCase() || ''}
+                data-tags={work.data.tags.join(',')}
+                data-status={work.data.status}
+                style={`animation-delay: ${0.2 + index * 0.1}s`}
+              >
 								<header class="mb-4">
 									<div class="flex items-start justify-between mb-2">
 										<h2 class="text-xl font-semibold">
@@ -160,13 +156,15 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
 					</div>
 				)}
 				
-				<!-- 結果がない場合のメッセージ -->
-				<div id="no-results" class="hidden">
-					<p class="text-gray-600 text-center py-8">検索条件に一致するプロジェクトが見つかりませんでした。</p>
-				</div>
-				</div>
-			</div>
-		</main>
+        <!-- 結果がない場合のメッセージ -->
+        <div id="no-results" class="hidden">
+          <div class="card text-center py-12">
+            <p class="text-text-secondary text-lg">検索条件に一致するプロジェクトが見つかりませんでした。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 		
 		<script>
 			// フィルタリング機能
@@ -251,5 +249,4 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
 			// 初期表示
 			filterWorks();
 		</script>
-	</body>
-</html>
+</Layout>

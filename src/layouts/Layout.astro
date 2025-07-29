@@ -1,5 +1,95 @@
 ---
 import '@styles/global.css';
+import Header from '@components/Header.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  currentPath?: string;
+  backgroundPattern?: 'main' | 'blog' | 'works' | 'links';
+}
+
+const { 
+  title, 
+  description = 'マルチクリエイター向けのポートフォリオ・ブログサイト',
+  currentPath = '',
+  backgroundPattern = 'main'
+} = Astro.props;
 ---
 
-<slot></slot>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{title}</title>
+  <meta name="description" content={description}>
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content={title}>
+  <meta property="og:description" content={description}>
+  <meta property="og:site_name" content="UBO SITE">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content={title}>
+  <meta name="twitter:description" content={description}>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  
+  <!-- Preconnect to external domains -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Prefetch and preload critical resources -->
+  <link rel="preload" href="/assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+</head>
+<body class={`bg-pattern-${backgroundPattern} particles motion-preset-fade`}>
+  <Header currentPath={currentPath} />
+  
+  <main class="main-content">
+    <slot />
+  </main>
+  
+  <!-- Global styles for body padding -->
+  <style>
+    .main-content {
+      padding-top: 5rem; /* Header height + spacing */
+      min-height: calc(100vh - 5rem);
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Ensure smooth scrolling */
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    /* Custom scrollbar for webkit browsers */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: var(--orange-main);
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--orange-light);
+    }
+    
+    /* Focus indicators for accessibility */
+    :focus-visible {
+      outline: 2px solid var(--orange-main);
+      outline-offset: 2px;
+    }
+  </style>
+</body>
+</html></slot>

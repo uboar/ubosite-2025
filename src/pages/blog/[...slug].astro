@@ -1,7 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
-import "@styles/global.css";
-import Header from '@components/Header.astro';
+import Layout from '@layouts/Layout.astro';
 import TableOfContents from '@components/TableOfContents.astro';
 import { extractTocFromMarkdown } from '@utils/toc';
 
@@ -20,80 +19,72 @@ const { Content } = await render(post);
 const toc = extractTocFromMarkdown(post.body);
 ---
 
-<html lang="ja">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{post.data.title}</title>
-		{post.data.description && (
-			<meta name="description" content={post.data.description} />
-		)}
-	</head>
-	<body class="bg-gray-50 min-h-screen">
-		<Header currentPath="/blog" />
-		<main class="p-8">
-			<div class="max-w-6xl mx-auto">
-				<nav class="mb-8 max-w-4xl">
-					<a href="/blog/" class="text-blue-600 hover:text-blue-800">← ブログ一覧に戻る</a>
-				</nav>
-			
-			<div class="lg:flex lg:gap-8">
-				<!-- メインコンテンツ -->
-				<article class="lg:w-3/4 lg:max-w-4xl">
-				<header class="mb-8">
-					<h1 class="text-4xl font-bold mb-4">{post.data.title}</h1>
-					
-					<div class="text-gray-600 mb-4">
-						<time datetime={post.data.pubDate.toISOString()}>
-							公開日: {post.data.pubDate.toLocaleDateString('ja-JP')}
-						</time>
-						{post.data.updatedDate && (
-							<span class="ml-4">
-								更新日: {post.data.updatedDate.toLocaleDateString('ja-JP')}
-							</span>
-						)}
-					</div>
-					
-					{post.data.description && (
-						<p class="text-lg text-gray-700 mb-6">{post.data.description}</p>
-					)}
-					
-					{post.data.tags && post.data.tags.length > 0 && (
-						<div class="flex flex-wrap gap-2 mb-6">
-							{post.data.tags.map((tag) => (
-								<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-									{tag}
-								</span>
-							))}
-						</div>
-					)}
-					
-					{post.data.image && (
-						<div class="mb-6">
-							<img 
-								src={post.data.image.url} 
-								alt={post.data.image.alt}
-								class="w-full h-auto rounded-lg shadow-md"
-							/>
-						</div>
-					)}
-				</header>
-				
-					<div class="prose prose-lg max-w-none">
-						<Content />
-					</div>
-				</article>
-				
-				<!-- サイドバー（目次） -->
-				<aside class="lg:w-1/4 lg:pl-4">
-					<div class="lg:sticky lg:top-8">
-						<TableOfContents toc={toc} />
-					</div>
-				</aside>
-				</div>
-			</div>
-		</main>
-	</body>
-</html>
+<Layout 
+  title={`${post.data.title} - UBO SITE`}
+  description={post.data.description}
+  currentPath={`/blog/${post.data.slug}`}
+  backgroundPattern="main"
+>
+  <div class="container">
+    <div class="py-8">
+      <nav class="mb-8">
+        <a href="/blog/" class="btn btn-outline btn-sm motion-preset-slide-right-sm">← ブログ一覧に戻る</a>
+      </nav>
+    
+      <div class="lg:flex lg:gap-8 xl:gap-12">
+        <!-- メインコンテンツ -->
+        <article class="lg:w-3/4 min-w-0">
+          <header class="mb-12 motion-preset-slide-up-sm">
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 leading-tight break-words">{post.data.title}</h1>
+            
+            <div class="flex flex-wrap items-center gap-4 text-text-muted mb-6 text-sm sm:text-base">
+              <time class="blog-card-date" datetime={post.data.pubDate.toISOString()}>
+                公開日: {post.data.pubDate.toLocaleDateString('ja-JP')}
+              </time>
+              {post.data.updatedDate && (
+                <span>
+                  更新日: {post.data.updatedDate.toLocaleDateString('ja-JP')}
+                </span>
+              )}
+            </div>
+            
+            {post.data.description && (
+              <p class="text-lg sm:text-xl text-text-secondary mb-8 leading-relaxed">{post.data.description}</p>
+            )}
+            
+            {post.data.tags && post.data.tags.length > 0 && (
+              <div class="flex flex-wrap gap-2 mb-8">
+                {post.data.tags.map((tag) => (
+                  <span class="blog-card-tag">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+            
+            {post.data.image && (
+              <div class="mb-8">
+                <img 
+                  src={post.data.image.url} 
+                  alt={post.data.image.alt}
+                  class="w-full h-auto rounded-xl shadow-lg max-w-full"
+                />
+              </div>
+            )}
+          </header>
+          
+          <div class="prose prose-base sm:prose-lg lg:prose-xl prose-invert max-w-full motion-preset-slide-up-sm overflow-hidden" style="animation-delay: 0.2s">
+            <Content />
+          </div>
+        </article>
+        
+        <!-- サイドバー（目次） -->
+        <aside class="lg:w-1/4 lg:min-w-0 mt-12 lg:mt-0">
+          <div class="lg:sticky lg:top-24 motion-preset-slide-up-sm" style="animation-delay: 0.3s">
+            <TableOfContents toc={toc} />
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+</Layout>

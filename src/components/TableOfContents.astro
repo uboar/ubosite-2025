@@ -9,21 +9,32 @@ const { toc } = Astro.props;
 ---
 
 {toc.length > 0 && (
-  <div class="toc-container bg-gray-50 border border-gray-200 rounded-lg p-4 mb-8">
-    <h2 class="text-lg font-semibold mb-4 text-gray-800">目次</h2>
+  <div class="toc-container card motion-preset-slide-up-sm">
+    <div class="toc-header mb-6">
+      <h2 class="text-xl font-bold text-orange-main flex items-center gap-2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="text-orange-accent">
+          <path d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h14v-2H3v2zm16 0h2v-2h-2v2zm0-10v2h2V7h-2zm0 6h2v-2h-2v2z"/>
+        </svg>
+        目次
+      </h2>
+      <div class="toc-progress-bar">
+        <div class="toc-progress-fill"></div>
+      </div>
+    </div>
     <nav class="toc-nav">
-      <ul class="space-y-2">
+      <ul class="toc-list">
         {toc.map((item) => (
           <li 
-            class={`toc-item toc-level-${item.level}`}
-            style={`margin-left: ${(item.level - 1) * 1}rem`}
+            class={`toc-item toc-level-${item.level} motion-preset-slide-right-sm`}
+            style={`margin-left: ${(item.level - 1) * 1.2}rem; animation-delay: ${0.1 + (item.level - 1) * 0.05}s`}
           >
             <a 
               href={`#${item.id}`}
-              class="toc-link block text-sm text-gray-600 hover:text-blue-600 transition-colors duration-200 py-1 hover:underline"
+              class="toc-link"
               data-target={item.id}
             >
-              {item.text}
+              <span class="toc-bullet"></span>
+              <span class="toc-text">{item.text}</span>
             </a>
           </li>
         ))}
@@ -79,17 +90,34 @@ const { toc } = Astro.props;
       
       // すべてのリンクからアクティブクラスを削除
       tocLinks.forEach(link => {
-        link.classList.remove('font-semibold', 'text-blue-600');
-        link.classList.add('text-gray-600');
+        link.classList.remove('toc-active');
+        const bullet = link.querySelector('.toc-bullet');
+        if (bullet) bullet.classList.remove('toc-bullet-active');
       });
       
       // 現在のセクションのリンクをハイライト
       if (currentId) {
         const activeLink = document.querySelector(`[data-target="${currentId}"]`);
         if (activeLink) {
-          activeLink.classList.add('font-semibold', 'text-blue-600');
-          activeLink.classList.remove('text-gray-600');
+          activeLink.classList.add('toc-active');
+          const bullet = activeLink.querySelector('.toc-bullet');
+          if (bullet) bullet.classList.add('toc-bullet-active');
         }
+      }
+      
+      // 進捗バーを更新
+      updateProgressBar();
+    }
+    
+    // 進捗バーの更新
+    function updateProgressBar() {
+      const scrollTop = window.pageYOffset;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = (scrollTop / docHeight) * 100;
+      
+      const progressFill = document.querySelector('.toc-progress-fill');
+      if (progressFill) {
+        (progressFill as HTMLElement).style.width = `${Math.min(scrollPercent, 100)}%`;
       }
     }
     
@@ -111,34 +139,257 @@ const { toc } = Astro.props;
 </script>
 
 <style>
-  /* 目次のレベル別スタイル */
-  .toc-level-1 {
-    font-size: 0.875rem;
+  /* 目次コンテナ */
+  .toc-container {
+    position: sticky;
+    top: 6rem;
+    max-height: calc(100vh - 8rem);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--orange-main) var(--bg-secondary);
   }
   
-  .toc-level-2 {
-    font-size: 0.8125rem;
+  .toc-container::-webkit-scrollbar {
+    width: 4px;
   }
   
-  .toc-level-3 {
-    font-size: 0.75rem;
+  .toc-container::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 2px;
+  }
+  
+  .toc-container::-webkit-scrollbar-thumb {
+    background: var(--orange-main);
+    border-radius: 2px;
+  }
+  
+  /* 進捗バー */
+  .toc-progress-bar {
+    width: 100%;
+    height: 3px;
+    background-color: var(--bg-tertiary);
+    border-radius: 1.5px;
+    margin-top: 0.75rem;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .toc-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--gradient-primary);
+    border-radius: 1.5px;
+    transition: width 0.3s ease;
+    position: relative;
+  }
+  
+  .toc-progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20px;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3));
+    animation: shimmer 2s infinite;
+  }
+  
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  
+  /* 目次リスト */
+  .toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .toc-item {
+    margin: 0.75rem 0;
+    transition: all 0.3s ease;
+  }
+  
+  .toc-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid transparent;
+  }
+  
+  .toc-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
+    transition: left 0.5s ease;
+  }
+  
+  .toc-link:hover::before {
+    left: 100%;
+  }
+  
+  .toc-link:hover {
+    color: var(--orange-light);
+    background: rgba(255, 107, 53, 0.05);
+    border-color: rgba(255, 107, 53, 0.2);
+    transform: translateX(0.25rem);
+  }
+  
+  /* アクティブリンク */
+  .toc-link.toc-active {
+    color: var(--orange-main);
+    background: rgba(255, 107, 53, 0.1);
+    border-color: rgba(255, 107, 53, 0.3);
+    font-weight: 600;
+    box-shadow: var(--glow-primary);
+  }
+  
+  /* バレット（ドット） */
+  .toc-bullet {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--text-muted);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    position: relative;
+  }
+  
+  .toc-link:hover .toc-bullet {
+    background-color: var(--orange-light);
+    transform: scale(1.2);
+  }
+  
+  .toc-bullet-active {
+    background-color: var(--orange-main) !important;
+    box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+    transform: scale(1.3) !important;
+  }
+  
+  .toc-bullet-active::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 4px;
+    height: 4px;
+    background-color: var(--bg-primary);
+    border-radius: 50%;
+  }
+  
+  /* テキスト */
+  .toc-text {
+    line-height: 1.4;
+    word-break: break-word;
+    flex: 1;
+  }
+  
+  /* レベル別スタイル */
+  .toc-level-1 .toc-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  
+  .toc-level-2 .toc-text {
+    font-size: 0.85rem;
+  }
+  
+  .toc-level-3 .toc-text {
+    font-size: 0.8rem;
+    opacity: 0.9;
   }
   
   .toc-level-4,
   .toc-level-5,
   .toc-level-6 {
-    font-size: 0.6875rem;
     opacity: 0.8;
   }
   
-  .toc-container {
-    position: sticky;
-    top: 20px;
+  .toc-level-4 .toc-text,
+  .toc-level-5 .toc-text,
+  .toc-level-6 .toc-text {
+    font-size: 0.75rem;
   }
   
+  .toc-level-4 .toc-bullet,
+  .toc-level-5 .toc-bullet,
+  .toc-level-6 .toc-bullet {
+    width: 6px;
+    height: 6px;
+  }
+  
+  /* レスポンシブ対応 */
   @media (max-width: 1024px) {
     .toc-container {
       position: static;
+      top: auto;
+      max-height: none;
+      margin-top: 2rem;
+      padding: 1rem;
+    }
+    
+    .toc-item {
+      margin: 0.5rem 0;
+    }
+    
+    .toc-link {
+      padding: 0.75rem 1rem;
+    }
+  }
+  
+  /* モバイル向け調整 */
+  @media (max-width: 640px) {
+    .toc-container {
+      border-radius: 0.75rem;
+    }
+    
+    .toc-header h2 {
+      font-size: 1.125rem;
+    }
+    
+    .toc-level-1 .toc-text {
+      font-size: 0.85rem;
+    }
+    
+    .toc-level-2 .toc-text,
+    .toc-level-3 .toc-text {
+      font-size: 0.8rem;
+    }
+    
+    .toc-level-4 .toc-text,
+    .toc-level-5 .toc-text,
+    .toc-level-6 .toc-text {
+      font-size: 0.7rem;
+    }
+  }
+  
+  /* ダークモード固有の調整 */
+  @media (prefers-reduced-motion: reduce) {
+    .toc-link,
+    .toc-bullet,
+    .toc-progress-fill {
+      transition: none;
+    }
+    
+    .toc-link::before {
+      display: none;
+    }
+    
+    @keyframes shimmer {
+      0%, 100% { transform: translateX(0); }
     }
   }
 </style>
