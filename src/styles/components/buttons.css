@@ -57,9 +57,11 @@
 }
 
 .btn-primary:hover {
-  background: var(--gradient-secondary);
+  background: linear-gradient(135deg, var(--orange-accent), var(--orange-light));
+  color: var(--bg-primary);
   box-shadow: var(--glow-hover), var(--shadow-medium);
   transform: translateY(-2px);
+  border-color: var(--orange-light);
 }
 
 .btn-primary:active {
