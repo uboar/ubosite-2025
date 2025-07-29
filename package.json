@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",
+    "tailwindcss-motion": "^1.1.1",
     "unist-util-visit": "^5.0.0"
   }
 }
