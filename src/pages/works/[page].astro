@@ -218,7 +218,6 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
     const searchInput = document.getElementById('search-input');
     const tagFilters = document.querySelectorAll('.tag-filter');
     const workItems = document.querySelectorAll('.work-item');
-    const resultsCount = document.getElementById('results-count');
     const noResults = document.getElementById('no-results');
     const worksList = document.getElementById('works-list');
     
@@ -275,11 +274,6 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
           workElement.style.display = 'none';
         }
       });
-      
-      // 結果数表示
-      if (resultsCount) {
-        resultsCount.textContent = `${visibleCount}件のプロジェクトが見つかりました`;
-      }
       
       // 結果がない場合の表示切り替え
       if (visibleCount === 0) {
