@@ -65,9 +65,6 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
         </div>
       </div>
 
-      <!-- 結果表示 -->
-      <div id="results-count" class="text-sm text-text-muted mb-6"></div>
-
       <!-- プロジェクト一覧 -->
       <div id="works-container">
         {page.data.length === 0 ? (
