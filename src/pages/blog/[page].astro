@@ -3,7 +3,7 @@ import { getCollection } from "astro:content";
 import Layout from "@layouts/Layout.astro";
 import Pagination from "@components/Pagination.astro";
 
-export async function getStaticPaths({ paginate }) {
+export async function getStaticPaths({ paginate }: { paginate: any }) {
   const allPosts = await getCollection("blog");
   const sortedPosts = allPosts.sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
@@ -12,7 +12,7 @@ export async function getStaticPaths({ paginate }) {
   return paginate(sortedPosts, { pageSize: 6 });
 }
 
-const { page } = Astro.props;
+const { page } = Astro.props as { page: any };
 const pageTitle = page.currentPage === 1 ? "BLOG" : `BLOG - ページ ${page.currentPage}`;
 
 // 全てのタグを抽出（フィルター用）
@@ -53,7 +53,7 @@ const allTags = [...new Set(allPosts.flatMap(post => post.data.tags))];
             >
               全て
             </button>
-            {allTags.map((tag) => (
+            {allTags.map((tag: string) => (
               <button 
                 class="tag-filter btn btn-outline btn-sm"
                 data-tag={tag}
@@ -73,7 +73,7 @@ const allTags = [...new Set(allPosts.flatMap(post => post.data.tags))];
           </div>
         ) : (
           <div class="grid-container spacing-lg" id="posts-list">
-            {page.data.map((post, index) => (
+            {page.data.map((post: any, index: number) => (
               <article 
                 class="post-item blog-card motion-preset-slide-up-sm"
                 data-title={post.data.title.toLowerCase()}
@@ -104,7 +104,7 @@ const allTags = [...new Set(allPosts.flatMap(post => post.data.tags))];
                   )}
                   {post.data.tags && post.data.tags.length > 0 && (
                     <div class="blog-card-tags">
-                      {post.data.tags.map((tag) => (
+                      {post.data.tags.map((tag: string) => (
                         <span class="blog-card-tag">
                           {tag}
                         </span>

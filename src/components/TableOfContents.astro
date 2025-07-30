@@ -52,8 +52,11 @@ const { toc } = Astro.props;
       link.addEventListener('click', (e) => {
         e.preventDefault();
         
-        const targetId = (e.target as HTMLAnchorElement).dataset.target;
-        const targetElement = document.getElementById(targetId || '');
+        const target = e.target as HTMLAnchorElement;
+        const targetId = target?.dataset?.target;
+        if (!targetId) return;
+        
+        const targetElement = document.getElementById(targetId);
         
         if (targetElement) {
           // ヘッダーの高さを考慮したオフセット

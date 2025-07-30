@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         await navigator.clipboard.writeText(url);
         
-        const originalText = button.textContent.trim();
+        const originalText = button.textContent?.trim() || 'URLをコピー';
         button.textContent = 'コピーしました！';
         button.classList.add('copied');
         
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.execCommand('copy');
         document.body.removeChild(textArea);
         
-        const originalText = button.textContent.trim();
+        const originalText = button.textContent?.trim() || 'URLをコピー';
         button.textContent = 'コピーしました！';
         button.classList.add('copied');
         

@@ -80,7 +80,7 @@ const toc = extractTocFromMarkdown(post.body || '');
           
           <SocialShare 
             title={post.data.title}
-            url={`${Astro.site}blog/${post.data.slug}`}
+            url={`${Astro.site || 'https://ubo-site.vercel.app/'}blog/${post.data.slug}`}
             description={post.data.description}
           />
         </article>
