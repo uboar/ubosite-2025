@@ -3,12 +3,12 @@ interface Props {
   currentPath?: string;
 }
 
-const { currentPath = '' } = Astro.props;
+const { currentPath = "" } = Astro.props;
 
 // 現在のパスに基づいてアクティブなリンクを判定
 const isActive = (path: string) => {
-  if (path === '/' && currentPath === '/') return true;
-  if (path !== '/' && currentPath.startsWith(path)) return true;
+  if (path === "/" && currentPath === "/") return true;
+  if (path !== "/" && currentPath.startsWith(path)) return true;
   return false;
 };
 ---
@@ -16,40 +16,36 @@ const isActive = (path: string) => {
 <header class="header" id="header">
   <nav class="nav-container">
     <!-- ロゴ/サイト名 -->
-    <a href="/" class="logo motion-preset-slide-down-sm">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 2L2 7L12 12L22 7L12 2Z"/>
-        <path d="M2 17L12 22L22 17"/>
-        <path d="M2 12L12 17L22 12"/>
-      </svg>
+    <a href="/" class="logo motion-preset-slide-down-sm drop-shadow-2xl shadow-white">
+      <img src="favicon.svg" class="w-10 h-10" alt="UBOPAGE Logo" />
     </a>
 
     <!-- デスクトップナビゲーション -->
     <div class="nav-menu">
-      <a 
-        href="/" 
-        class={`nav-link motion-preset-slide-down-sm ${isActive('/') ? 'active' : ''}`}
+      <a
+        href="/"
+        class={`nav-link motion-preset-slide-down-sm ${isActive("/") ? "active" : ""}`}
         style="animation-delay: 0.1s"
       >
         HOME
       </a>
-      <a 
-        href="/blog" 
-        class={`nav-link motion-preset-slide-down-sm ${isActive('/blog') ? 'active' : ''}`}
+      <a
+        href="/blog"
+        class={`nav-link motion-preset-slide-down-sm ${isActive("/blog") ? "active" : ""}`}
         style="animation-delay: 0.2s"
       >
         BLOG
       </a>
-      <a 
-        href="/works" 
-        class={`nav-link motion-preset-slide-down-sm ${isActive('/works') ? 'active' : ''}`}
+      <a
+        href="/works"
+        class={`nav-link motion-preset-slide-down-sm ${isActive("/works") ? "active" : ""}`}
         style="animation-delay: 0.3s"
       >
         WORKS
       </a>
-      <a 
-        href="/link" 
-        class={`nav-link motion-preset-slide-down-sm ${isActive('/link') ? 'active' : ''}`}
+      <a
+        href="/link"
+        class={`nav-link motion-preset-slide-down-sm ${isActive("/link") ? "active" : ""}`}
         style="animation-delay: 0.4s"
       >
         LINK
@@ -57,49 +53,68 @@ const isActive = (path: string) => {
     </div>
 
     <!-- モバイルメニューボタン -->
-    <button 
+    <button
       id="mobile-menu-button"
-      type="button" 
+      type="button"
       class="mobile-menu-button motion-preset-slide-down-sm"
-      aria-controls="mobile-menu" 
+      aria-controls="mobile-menu"
       aria-expanded="false"
       style="animation-delay: 0.1s"
     >
       <span class="sr-only">メニューを開く</span>
       <!-- ハンバーガーアイコン -->
-      <svg class="hamburger-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      <svg
+        class="hamburger-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        aria-hidden="true"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"></path>
       </svg>
       <!-- 閉じるアイコン（初期は非表示） -->
-      <svg class="close-icon hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      <svg
+        class="close-icon hidden"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        aria-hidden="true"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"></path>
       </svg>
     </button>
 
     <!-- モバイルメニュー -->
     <div class="mobile-menu" id="mobile-menu">
       <div class="mobile-menu-content">
-        <a 
-          href="/" 
-          class={`mobile-nav-link ${isActive('/') ? 'active' : ''}`}
-        >
+        <a href="/" class={`mobile-nav-link ${isActive("/") ? "active" : ""}`}>
           HOME
         </a>
-        <a 
-          href="/blog" 
-          class={`mobile-nav-link ${isActive('/blog') ? 'active' : ''}`}
+        <a
+          href="/blog"
+          class={`mobile-nav-link ${isActive("/blog") ? "active" : ""}`}
         >
           BLOG
         </a>
-        <a 
-          href="/works" 
-          class={`mobile-nav-link ${isActive('/works') ? 'active' : ''}`}
+        <a
+          href="/works"
+          class={`mobile-nav-link ${isActive("/works") ? "active" : ""}`}
         >
           WORKS
         </a>
-        <a 
-          href="/link" 
-          class={`mobile-nav-link ${isActive('/link') ? 'active' : ''}`}
+        <a
+          href="/link"
+          class={`mobile-nav-link ${isActive("/link") ? "active" : ""}`}
         >
           LINK
         </a>
@@ -110,68 +125,69 @@ const isActive = (path: string) => {
 
 <script>
   // モバイルメニューの開閉機能とスクロール検知
-  const header = document.getElementById('header');
-  const mobileMenuButton = document.getElementById('mobile-menu-button');
-  const mobileMenu = document.getElementById('mobile-menu');
-  
+  const header = document.getElementById("header");
+  const mobileMenuButton = document.getElementById("mobile-menu-button");
+  const mobileMenu = document.getElementById("mobile-menu");
+
   // スクロール検知でヘッダースタイル変更
   let lastScrollY = window.scrollY;
-  
-  window.addEventListener('scroll', () => {
+
+  window.addEventListener("scroll", () => {
     const currentScrollY = window.scrollY;
-    
+
     if (currentScrollY > 100) {
-      header?.classList.add('scrolled');
+      header?.classList.add("scrolled");
     } else {
-      header?.classList.remove('scrolled');
+      header?.classList.remove("scrolled");
     }
-    
+
     lastScrollY = currentScrollY;
   });
-  
+
   // モバイルメニュー制御
   if (mobileMenuButton && mobileMenu) {
-    mobileMenuButton.addEventListener('click', () => {
-      const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
-      const hamburgerIcon = mobileMenuButton.querySelector('.hamburger-icon');
-      const closeIcon = mobileMenuButton.querySelector('.close-icon');
-      
+    mobileMenuButton.addEventListener("click", () => {
+      const isExpanded =
+        mobileMenuButton.getAttribute("aria-expanded") === "true";
+      const hamburgerIcon = mobileMenuButton.querySelector(".hamburger-icon");
+      const closeIcon = mobileMenuButton.querySelector(".close-icon");
+
       // メニューの表示/非表示を切り替え
       if (isExpanded) {
-        mobileMenu.classList.remove('open');
-        mobileMenuButton.setAttribute('aria-expanded', 'false');
-        hamburgerIcon?.classList.remove('hidden');
-        closeIcon?.classList.add('hidden');
+        mobileMenu.classList.remove("open");
+        mobileMenuButton.setAttribute("aria-expanded", "false");
+        hamburgerIcon?.classList.remove("hidden");
+        closeIcon?.classList.add("hidden");
       } else {
-        mobileMenu.classList.add('open');
-        mobileMenuButton.setAttribute('aria-expanded', 'true');
-        hamburgerIcon?.classList.add('hidden');
-        closeIcon?.classList.remove('hidden');
+        mobileMenu.classList.add("open");
+        mobileMenuButton.setAttribute("aria-expanded", "true");
+        hamburgerIcon?.classList.add("hidden");
+        closeIcon?.classList.remove("hidden");
       }
     });
 
     // リンクをクリックしたらモバイルメニューを閉じる
-    const mobileLinks = mobileMenu.querySelectorAll('.mobile-nav-link');
-    mobileLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        mobileMenu.classList.remove('open');
-        mobileMenuButton.setAttribute('aria-expanded', 'false');
-        const hamburgerIcon = mobileMenuButton.querySelector('.hamburger-icon');
-        const closeIcon = mobileMenuButton.querySelector('.close-icon');
-        hamburgerIcon?.classList.remove('hidden');
-        closeIcon?.classList.add('hidden');
+    const mobileLinks = mobileMenu.querySelectorAll(".mobile-nav-link");
+    mobileLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        mobileMenu.classList.remove("open");
+        mobileMenuButton.setAttribute("aria-expanded", "false");
+        const hamburgerIcon = mobileMenuButton.querySelector(".hamburger-icon");
+        const closeIcon = mobileMenuButton.querySelector(".close-icon");
+        hamburgerIcon?.classList.remove("hidden");
+        closeIcon?.classList.add("hidden");
       });
     });
 
     // メニュー外クリックで閉じる
-    document.addEventListener('click', (e) => {
+    document.addEventListener("click", (e) => {
       if (!header?.contains(e.target as Node)) {
-        mobileMenu.classList.remove('open');
-        mobileMenuButton.setAttribute('aria-expanded', 'false');
-        const hamburgerIcon = mobileMenuButton.querySelector('.hamburger-icon');
-        const closeIcon = mobileMenuButton.querySelector('.close-icon');
-        hamburgerIcon?.classList.remove('hidden');
-        closeIcon?.classList.add('hidden');
+        mobileMenu.classList.remove("open");
+        mobileMenuButton.setAttribute("aria-expanded", "false");
+        const hamburgerIcon = mobileMenuButton.querySelector(".hamburger-icon");
+        const closeIcon = mobileMenuButton.querySelector(".close-icon");
+        hamburgerIcon?.classList.remove("hidden");
+        closeIcon?.classList.add("hidden");
       }
     });
   }

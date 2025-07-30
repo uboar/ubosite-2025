@@ -1,8 +1,8 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "@layouts/Layout.astro";
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
 const pageTitle = "リンクツリー";
 const allLinks = await getCollection("links");
@@ -10,8 +10,8 @@ const allLinks = await getCollection("links");
 // contentフォルダからアイコンを読み込む関数
 const getIconContent = (iconPath: string) => {
   try {
-    const fullPath = path.join(process.cwd(), 'src/content/icons', iconPath);
-    return fs.readFileSync(fullPath, 'utf-8');
+    const fullPath = path.join(process.cwd(), "src/content/icons", iconPath);
+    return fs.readFileSync(fullPath, "utf-8");
   } catch (error) {
     console.warn(`Icon not found: ${iconPath}`);
     return null;
@@ -20,30 +20,33 @@ const getIconContent = (iconPath: string) => {
 
 // アクティブなリンクのみを取得し、優先度順にソート
 const activeLinks = allLinks
-  .filter(link => link.data.isActive)
+  .filter((link) => link.data.isActive)
   .sort((a, b) => b.data.priority - a.data.priority);
 
 // カテゴリごとにグループ化
-const groupedLinks = activeLinks.reduce((acc, link) => {
-  const category = link.data.category;
-  if (!acc[category]) {
-    acc[category] = [];
-  }
-  acc[category].push(link);
-  return acc;
-}, {} as Record<string, typeof activeLinks>);
+const groupedLinks = activeLinks.reduce(
+  (acc, link) => {
+    const category = link.data.category;
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(link);
+    return acc;
+  },
+  {} as Record<string, typeof activeLinks>
+);
 
 // カテゴリの日本語名マッピング
 const categoryNames: Record<string, string> = {
   social: "ソーシャルメディア",
-  portfolio: "ポートフォリオ", 
+  portfolio: "ポートフォリオ",
   blog: "ブログ・記事",
   contact: "お問い合わせ",
-  other: "その他"
+  other: "その他",
 };
 ---
 
-<Layout 
+<Layout
   title={`${pageTitle} - UBO SITE`}
   description="私のリンクツリー - ソーシャルメディア、ポートフォリオ、ブログなどへのリンク集"
   currentPath="/link"
@@ -54,81 +57,110 @@ const categoryNames: Record<string, string> = {
       <div class="max-w-md mx-auto">
         <!-- プロフィールセクション -->
         <div class="text-center mb-12 motion-preset-slide-down-sm">
-          <div class="w-32 h-32 mx-auto mb-6 flex items-center justify-center relative">
-            <div class="w-full h-full bg-gradient-primary rounded-full flex items-center justify-center shadow-lg" style="box-shadow: var(--glow-primary)">
-              <span class="text-bg-primary text-4xl font-bold">🚀</span>
+          <div
+            class="w-32 h-32 mx-auto mb-6 flex items-center justify-center relative"
+          >
+            <div
+              class="w-full h-full bg-gradient-primary rounded-full flex items-center justify-center shadow-lg"
+              style="box-shadow: var(--glow-primary)"
+            >
+              <img src="favicon.svg" class="w-32 h-32" alt="UBOPAGE Logo" />
             </div>
           </div>
-          <h1 class="text-4xl font-bold mb-4 motion-preset-typewriter">My Links</h1>
-          <p class="text-text-secondary text-lg">すべてのリンクがここにあります</p>
+          <h1 class="text-4xl font-bold mb-4 motion-preset-typewriter">
+            uboar
+          </h1>
+          <p class="text-text-secondary text-sm">
+            NICONICO MEDLEY / DTM / ILLUST / VIDEO / ELECTRIC DEV / VOICE SYNTHESIS / WEB DEV etc...
+            <br />
+            <br />
+            CONTACT : uboaruboar@gmail.com
+          </p>
         </div>
 
         <!-- リンク一覧 -->
         <div class="space-y-8">
-          {Object.entries(groupedLinks).map(([category, links], categoryIndex) => (
-            <div class="motion-preset-slide-up-sm" style={`animation-delay: ${0.3 + categoryIndex * 0.1}s`}>
-              <h2 class="text-2xl font-bold text-center mb-6 text-orange-main">
-                {categoryNames[category] || category}
-              </h2>
-              <div class="space-y-4">
-                {links.map((link, linkIndex) => (
-                  <a
-                    href={link.data.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="card block w-full p-6 hover:scale-105 transition-all duration-300 group motion-preset-slide-up-sm"
-                    style={`animation-delay: ${0.4 + categoryIndex * 0.1 + linkIndex * 0.05}s; ${link.data.backgroundColor ? `background: linear-gradient(135deg, ${link.data.backgroundColor}, ${link.data.backgroundColor}dd);` : ''}`}
-                  >
-                    <div class="flex items-center justify-between">
-                      <div class="flex items-center space-x-4">
-                        {/* アイコン表示 - 画像ファイル優先、次に絵文字 */}
-                        {link.data.iconImage ? (
-                          <div 
-                            class="flex-shrink-0 transition-transform group-hover:scale-110"
-                            style={`width: ${link.data.iconSize || 32}px; height: ${link.data.iconSize || 32}px;`}
-                            set:html={getIconContent(link.data.iconImage)}
-                          />
-                        ) : link.data.icon && (
-                          <span class="text-3xl flex-shrink-0 transition-transform group-hover:scale-110">{link.data.icon}</span>
-                        )}
-                        <div>
-                          <h3 
-                            class="font-semibold text-lg group-hover:text-orange-light transition-colors"
-                            style={link.data.textColor ? `color: ${link.data.textColor}` : ''}
-                          >
-                            {link.data.title}
-                          </h3>
-                          {link.data.description && (
-                            <p 
-                              class="text-sm mt-1 text-text-muted"
-                              style={link.data.textColor ? `color: ${link.data.textColor}; opacity: 0.8` : ''}
-                            >
-                              {link.data.description}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      <svg 
-                        class="w-6 h-6 text-orange-accent group-hover:text-orange-light transition-all transform group-hover:translate-x-1" 
-                        fill="none" 
-                        stroke="currentColor" 
-                        viewBox="0 0 24 24"
+          {
+            Object.entries(groupedLinks).map(
+              ([category, links], categoryIndex) => (
+                <div
+                  class="motion-preset-slide-up-sm"
+                  style={`animation-delay: ${0.3 + categoryIndex * 0.1}s`}
+                >
+                  <h2 class="text-2xl font-bold text-center mb-6 text-orange-main">
+                    {categoryNames[category] || category}
+                  </h2>
+                  <div class="space-y-4">
+                    {links.map((link, linkIndex) => (
+                      <a
+                        href={link.data.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="card block w-full p-6 hover:scale-105 transition-all duration-300 group motion-preset-slide-up-sm"
+                        style={`animation-delay: ${0.4 + categoryIndex * 0.1 + linkIndex * 0.05}s; ${link.data.backgroundColor ? `background: linear-gradient(135deg, ${link.data.backgroundColor}, ${link.data.backgroundColor}dd);` : ""}`}
                       >
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </div>
-                  </a>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <!-- フッター -->
-        <div class="text-center mt-16 pb-8 motion-preset-slide-up-sm" style="animation-delay: 1s">
-          <p class="text-sm text-text-muted">
-            uboar / uboaruboar@gmail.com
-          </p>
+                        <div class="flex items-center justify-between">
+                          <div class="flex items-center space-x-4">
+                            {/* アイコン表示 - 画像ファイル優先、次に絵文字 */}
+                            {link.data.iconImage ? (
+                              <div
+                                class="flex-shrink-0 transition-transform group-hover:scale-110"
+                                style={`width: ${link.data.iconSize || 32}px; height: ${link.data.iconSize || 32}px;`}
+                                set:html={getIconContent(link.data.iconImage)}
+                              />
+                            ) : (
+                              link.data.icon && (
+                                <span class="text-3xl flex-shrink-0 transition-transform group-hover:scale-110">
+                                  {link.data.icon}
+                                </span>
+                              )
+                            )}
+                            <div>
+                              <h3
+                                class="font-semibold text-lg group-hover:text-orange-light transition-colors"
+                                style={
+                                  link.data.textColor
+                                    ? `color: ${link.data.textColor}`
+                                    : ""
+                                }
+                              >
+                                {link.data.title}
+                              </h3>
+                              {link.data.description && (
+                                <p
+                                  class="text-sm mt-1 text-text-muted"
+                                  style={
+                                    link.data.textColor
+                                      ? `color: ${link.data.textColor}; opacity: 0.8`
+                                      : ""
+                                  }
+                                >
+                                  {link.data.description}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          <svg
+                            class="w-6 h-6 text-orange-accent group-hover:text-orange-light transition-all transform group-hover:translate-x-1"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                            />
+                          </svg>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )
+            )
+          }
         </div>
       </div>
     </div>
@@ -136,21 +168,20 @@ const categoryNames: Record<string, string> = {
 
   <script>
     // クリック時のフィードバック効果
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener("DOMContentLoaded", () => {
       const linkElements = document.querySelectorAll('a[href^="http"]');
-      
-      linkElements.forEach(link => {
-        link.addEventListener('click', (e) => {
+
+      linkElements.forEach((link) => {
+        link.addEventListener("click", (e) => {
           const target = e.currentTarget as HTMLElement;
-          
+
           // クリック効果
-          target.style.transform = 'scale(0.95)';
+          target.style.transform = "scale(0.95)";
           setTimeout(() => {
-            target.style.transform = '';
+            target.style.transform = "";
           }, 150);
         });
       });
     });
   </script>
-
 </Layout>
