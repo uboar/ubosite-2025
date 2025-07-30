@@ -1,0 +1,300 @@
+---
+export interface Props {
+  currentPage: number;
+  totalPages: number;
+  baseUrl: string;
+  maxVisible?: number;
+}
+
+const { currentPage, totalPages, baseUrl, maxVisible = 5 } = Astro.props;
+
+// ページネーションのページ番号を計算
+function getPaginationPages(current: number, total: number, maxVisible: number) {
+  if (total <= maxVisible) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+
+  const pages: (number | string)[] = [];
+  const halfVisible = Math.floor(maxVisible / 2);
+
+  // 開始と終了の計算
+  let start = Math.max(1, current - halfVisible);
+  let end = Math.min(total, current + halfVisible);
+
+  // 左側の調整
+  if (end - start + 1 < maxVisible) {
+    if (start === 1) {
+      end = Math.min(total, start + maxVisible - 1);
+    } else {
+      start = Math.max(1, end - maxVisible + 1);
+    }
+  }
+
+  // 最初のページ
+  if (start > 1) {
+    pages.push(1);
+    if (start > 2) {
+      pages.push('...');
+    }
+  }
+
+  // 中間のページ
+  for (let i = start; i <= end; i++) {
+    pages.push(i);
+  }
+
+  // 最後のページ
+  if (end < total) {
+    if (end < total - 1) {
+      pages.push('...');
+    }
+    pages.push(total);
+  }
+
+  return pages;
+}
+
+const pages = getPaginationPages(currentPage, totalPages, maxVisible);
+
+function getPageUrl(page: number): string {
+  if (page === 1) {
+    return baseUrl;
+  }
+  return `${baseUrl}/page/${page}`;
+}
+---
+
+{totalPages > 1 && (
+  <nav class="pagination" aria-label="ページネーション">
+    <div class="pagination__container">
+      <!-- 前のページ -->
+      {currentPage > 1 && (
+        <a 
+          href={getPageUrl(currentPage - 1)}
+          class="btn btn-outline btn-sm pagination__button pagination__prev"
+          aria-label="前のページ"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+          </svg>
+          前へ
+        </a>
+      )}
+
+      <!-- ページ番号 -->
+      <div class="pagination__pages">
+        {pages.map((page) => (
+          typeof page === 'number' ? (
+            page === currentPage ? (
+              <span 
+                class="btn btn-primary btn-sm pagination__button pagination__current"
+                aria-current="page"
+                aria-label={`現在のページ ${page}`}
+              >
+                {page}
+              </span>
+            ) : (
+              <a 
+                href={getPageUrl(page)}
+                class="btn btn-outline btn-sm pagination__button pagination__page"
+                aria-label={`ページ ${page}`}
+              >
+                {page}
+              </a>
+            )
+          ) : (
+            <span 
+              class="pagination__ellipsis"
+              aria-hidden="true"
+            >
+              {page}
+            </span>
+          )
+        ))}
+      </div>
+
+      <!-- 次のページ -->
+      {currentPage < totalPages && (
+        <a 
+          href={getPageUrl(currentPage + 1)}
+          class="btn btn-outline btn-sm pagination__button pagination__next"
+          aria-label="次のページ"
+        >
+          次へ
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
+          </svg>
+        </a>
+      )}
+    </div>
+
+    <!-- ページ情報 -->
+    <div class="pagination__info">
+      <span class="text-sm text-text-muted">
+        {totalPages} ページ中 {currentPage} ページ目
+      </span>
+    </div>
+  </nav>
+)}
+
+<style>
+.pagination {
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pagination__container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pagination__pages {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.pagination__button {
+  min-width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.pagination__button:hover:not(.pagination__current) {
+  transform: translateY(-1px);
+}
+
+.pagination__current {
+  pointer-events: none;
+}
+
+.pagination__ellipsis {
+  padding: 0.5rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  user-select: none;
+}
+
+.pagination__prev,
+.pagination__next {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  min-width: auto;
+}
+
+.pagination__info {
+  text-align: center;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 639px) {
+  .pagination__container {
+    gap: 0.25rem;
+  }
+  
+  .pagination__button {
+    min-width: 40px;
+    height: 40px;
+    font-size: 0.875rem;
+  }
+  
+  .pagination__prev,
+  .pagination__next {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .pagination__prev span,
+  .pagination__next span {
+    display: none;
+  }
+  
+  .pagination__pages {
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .pagination__pages::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* 縮小表示時の調整 */
+@media (max-width: 480px) {
+  .pagination__pages {
+    gap: 0.125rem;
+  }
+  
+  .pagination__button {
+    min-width: 36px;
+    height: 36px;
+    font-size: 0.8rem;
+  }
+}
+
+/* アニメーション */
+.pagination__button {
+  position: relative;
+  overflow: hidden;
+}
+
+.pagination__button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 107, 53, 0.1);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s ease;
+}
+
+.pagination__button:hover::before {
+  width: 100%;
+  height: 100%;
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+  .pagination__ellipsis {
+    color: var(--text-muted);
+  }
+}
+
+/* アクセシビリティ */
+@media (prefers-reduced-motion: reduce) {
+  .pagination__button {
+    transition: none;
+  }
+  
+  .pagination__button:hover {
+    transform: none;
+  }
+  
+  .pagination__button::before {
+    transition: none;
+  }
+}
+
+/* フォーカス状態 */
+.pagination__button:focus {
+  outline: 2px solid var(--orange-main);
+  outline-offset: 2px;
+}
+</style>

@@ -17,7 +17,7 @@ const { post } = Astro.props;
 const { Content } = await render(post);
 
 // 目次を抽出
-const toc = extractTocFromMarkdown(post.body);
+const toc = extractTocFromMarkdown(post.body || '');
 ---
 
 <Layout 
@@ -35,7 +35,7 @@ const toc = extractTocFromMarkdown(post.body);
       <div class="lg:flex lg:gap-8 xl:gap-12">
         <!-- メインコンテンツ -->
         <article class="lg:w-3/4 min-w-0">
-          <header class="mb-12 motion-preset-slide-up-sm">
+          <header class="mb-12 motion-preset-slide-up-sm border-b">
             <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 leading-tight break-words">{post.data.title}</h1>
             
             <div class="flex flex-wrap items-center gap-4 text-text-muted mb-6 text-sm sm:text-base">

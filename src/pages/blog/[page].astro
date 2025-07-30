@@ -1,0 +1,220 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@layouts/Layout.astro";
+import Pagination from "@components/Pagination.astro";
+
+export async function getStaticPaths({ paginate }) {
+  const allPosts = await getCollection("blog");
+  const sortedPosts = allPosts.sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  );
+
+  return paginate(sortedPosts, { pageSize: 6 });
+}
+
+const { page } = Astro.props;
+const pageTitle = page.currentPage === 1 ? "BLOG" : `BLOG - ページ ${page.currentPage}`;
+
+// 全てのタグを抽出（フィルター用）
+const allPosts = await getCollection("blog");
+const allTags = [...new Set(allPosts.flatMap(post => post.data.tags))];
+---
+
+<Layout 
+  title={`${pageTitle} - UBO SITE`}
+  description="技術記事、学習記録、開発のTipsなど、日々の学びと気づきを記事にして共有"
+  currentPath="/blog"
+  backgroundPattern="main"
+>
+  <div class="container">
+    <div class="py-8">
+      <h1 class="text-4xl font-bold mb-8 motion-preset-slide-down-sm">BLOG</h1>
+			
+      <!-- 検索・フィルターエリア -->
+      <div class="card mb-8 motion-preset-slide-up-sm" style="animation-delay: 0.1s">
+        <!-- 検索ボックス -->
+        <div class="mb-4">
+          <input 
+            id="search-input"
+            type="text" 
+            placeholder="記事を検索..."
+            class="w-full px-4 py-3 bg-bg-secondary border border-orange-main/20 rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:border-orange-main focus:ring-2 focus:ring-orange-main/20 transition-all"
+          />
+        </div>
+        
+        <!-- タグフィルター -->
+        <div>
+          <p class="text-sm text-text-muted mb-3">タグで絞り込み:</p>
+          <div class="flex flex-wrap gap-2">
+            <button 
+              id="tag-all"
+              class="tag-filter btn btn-primary btn-sm"
+              data-tag="all"
+            >
+              全て
+            </button>
+            {allTags.map((tag) => (
+              <button 
+                class="tag-filter btn btn-outline btn-sm"
+                data-tag={tag}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- 結果表示 -->
+      <div id="results-count" class="text-sm text-text-muted mb-6"></div>
+
+      <!-- 記事一覧 -->
+      <div id="posts-container">
+        {page.data.length === 0 ? (
+          <div class="card text-center py-12">
+            <p class="text-text-secondary text-lg">ブログ記事がまだありません。</p>
+          </div>
+        ) : (
+          <div class="grid-container spacing-lg" id="posts-list">
+            {page.data.map((post, index) => (
+              <article 
+                class="post-item blog-card motion-preset-slide-up-sm"
+                data-title={post.data.title.toLowerCase()}
+                data-description={post.data.description?.toLowerCase() || ''}
+                data-tags={post.data.tags.join(',')}
+                style={`animation-delay: ${0.2 + index * 0.1}s`}
+              >
+                <div class="blog-card-content">
+                  <header class="mb-4">
+                    <h2 class="blog-card-title">
+                      <a href={`/blog/${post.data.slug}`} class="hover:text-orange-light transition-colors">
+                        {post.data.title}
+                      </a>
+                    </h2>
+                    <div class="blog-card-meta">
+                      <time class="blog-card-date" datetime={post.data.pubDate.toISOString()}>
+                        {post.data.pubDate.toLocaleDateString('ja-JP')}
+                      </time>
+                      {post.data.updatedDate && (
+                        <span class="text-text-muted">
+                          更新: {post.data.updatedDate.toLocaleDateString('ja-JP')}
+                        </span>
+                      )}
+                    </div>
+                  </header>
+                  {post.data.description && (
+                    <p class="blog-card-excerpt">{post.data.description}</p>
+                  )}
+                  {post.data.tags && post.data.tags.length > 0 && (
+                    <div class="blog-card-tags">
+                      {post.data.tags.map((tag) => (
+                        <span class="blog-card-tag">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+        
+        <!-- 結果がない場合のメッセージ -->
+        <div id="no-results" class="hidden">
+          <div class="card text-center py-12">
+            <p class="text-text-secondary text-lg">検索条件に一致する記事が見つかりませんでした。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ページネーション -->
+      <Pagination 
+        currentPage={page.currentPage}
+        totalPages={page.lastPage}
+        baseUrl="/blog"
+      />
+    </div>
+  </div>
+		
+  <script>
+    // フィルタリング機能
+    const searchInput = document.getElementById('search-input');
+    const tagFilters = document.querySelectorAll('.tag-filter');
+    const postItems = document.querySelectorAll('.post-item');
+    const resultsCount = document.getElementById('results-count');
+    const noResults = document.getElementById('no-results');
+    const postsList = document.getElementById('posts-list');
+    
+    let currentTag = 'all';
+    let currentSearch = '';
+    
+    // 検索機能
+    searchInput?.addEventListener('input', (e) => {
+      currentSearch = (e.target as HTMLInputElement).value.toLowerCase();
+      filterPosts();
+    });
+    
+    // タグフィルター機能
+    tagFilters.forEach(button => {
+      button.addEventListener('click', (e) => {
+        // アクティブなボタンのスタイルを更新
+        tagFilters.forEach(btn => {
+          btn.classList.remove('btn-primary');
+          btn.classList.add('btn-outline');
+        });
+        
+        const target = e.target as HTMLElement;
+        target.classList.add('btn-primary');
+        target.classList.remove('btn-outline');
+        
+        currentTag = target.dataset.tag || 'all';
+        filterPosts();
+      });
+    });
+    
+    // フィルタリング実行
+    function filterPosts() {
+      let visibleCount = 0;
+      
+      postItems.forEach(post => {
+        const postElement = post as HTMLElement;
+        const title = postElement.dataset.title || '';
+        const description = postElement.dataset.description || '';
+        const tags = postElement.dataset.tags?.split(',') || [];
+        
+        // 検索条件チェック
+        const matchesSearch = currentSearch === '' || 
+          title.includes(currentSearch) || 
+          description.includes(currentSearch);
+        
+        // タグ条件チェック
+        const matchesTag = currentTag === 'all' || tags.includes(currentTag);
+        
+        if (matchesSearch && matchesTag) {
+          postElement.style.display = 'block';
+          visibleCount++;
+        } else {
+          postElement.style.display = 'none';
+        }
+      });
+      
+      // 結果数表示
+      if (resultsCount) {
+        resultsCount.textContent = `${visibleCount}件の記事が見つかりました`;
+      }
+      
+      // 結果がない場合の表示切り替え
+      if (visibleCount === 0) {
+        if (postsList) postsList.style.display = 'none';
+        if (noResults) noResults.classList.remove('hidden');
+      } else {
+        if (postsList) postsList.style.display = 'block';
+        if (noResults) noResults.classList.add('hidden');
+      }
+    }
+    
+    // 初期表示
+    filterPosts();
+  </script>
+</Layout>
