@@ -21,8 +21,8 @@ const allTags = [...new Set(allPosts.flatMap(post => post.data.tags))];
 ---
 
 <Layout 
-  title={`${pageTitle} - UBO SITE`}
-  description="技術記事、学習記録、開発のTipsなど、日々の学びと気づきを記事にして共有"
+  title={`${pageTitle} - UBOPAGE`}
+  description="WRITE SOMETHING ANYWAY"
   currentPath="/blog"
   backgroundPattern="main"
 >
@@ -75,7 +75,7 @@ const allTags = [...new Set(allPosts.flatMap(post => post.data.tags))];
           <div class="grid-container spacing-lg" id="posts-list">
             {page.data.map((post: any, index: number) => (
               <article 
-                class="post-item blog-card motion-preset-slide-up-sm"
+                class="post-item blog-card motion-preset-slide-up-sm mb-2"
                 data-title={post.data.title.toLowerCase()}
                 data-description={post.data.description?.toLowerCase() || ''}
                 data-tags={post.data.tags.join(',')}
