@@ -25,6 +25,7 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
   description="WRITE SOMETHING ANYWAY"
   currentPath="/works"
   backgroundPattern="main"
+  ogImage={new URL('/og/works.png', Astro.site || 'https://uboar.net').href}
 >
   <div class="container">
     <div class="py-8">

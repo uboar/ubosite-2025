@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import { rehypeHeadingIds } from '@astrojs/markdown-remark';
+import ogImageIntegration from './integrations/og-image/index.js';
 
 import { visit } from "unist-util-visit";
 
@@ -388,6 +389,7 @@ function remarkWikiLinks() {
 export default defineConfig({
   site: "https://uboar.net",
   prefetch: true,
+  integrations: [ogImageIntegration()],
   markdown: {
     remarkPlugins: [remarkEmbedLinks, remarkWikiLinks],
     rehypePlugins: [
@@ -395,6 +397,17 @@ export default defineConfig({
     ]
   },
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
+    ssr: {
+      external: ['@resvg/resvg-js']
+    },
+    build: {
+      rollupOptions: {
+        external: ['@resvg/resvg-js']
+      }
+    },
+    optimizeDeps: {
+      exclude: ['@resvg/resvg-js']
+    }
   }
 });

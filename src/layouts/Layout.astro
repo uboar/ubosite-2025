@@ -7,14 +7,19 @@ interface Props {
   description?: string;
   currentPath?: string;
   backgroundPattern?: 'main' | 'blog' | 'works' | 'links';
+  ogImage?: string;
 }
 
 const { 
   title, 
-  description = 'マルチクリエイター向けのポートフォリオ・ブログサイト',
+  description = 'WRITE SOMETHING ANYWAY',
   currentPath = '',
-  backgroundPattern = 'main'
+  backgroundPattern = 'main',
+  ogImage
 } = Astro.props;
+
+const site = Astro.site || new URL('https://uboar.net');
+const defaultOgImage = new URL('/og/home.png', site).href;
 ---
 
 <!DOCTYPE html>
@@ -30,11 +35,14 @@ const {
   <meta property="og:title" content={title}>
   <meta property="og:description" content={description}>
   <meta property="og:site_name" content="UBOPAGE">
+  <meta property="og:image" content={ogImage || defaultOgImage}>
+  <meta property="og:url" content={new URL(Astro.url.pathname, site).href}>
   
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content={title}>
   <meta name="twitter:description" content={description}>
+  <meta name="twitter:image" content={ogImage || defaultOgImage}>
   
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">

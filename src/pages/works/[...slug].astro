@@ -25,6 +25,7 @@ const toc = extractTocFromMarkdown(work.body || '');
   description={work.data.description}
   currentPath={`/works/${work.data.slug}`}
   backgroundPattern="main"
+  ogImage={new URL(`/og/works/${work.data.slug}.png`, Astro.site || 'https://uboar.net').href}
 >
   <div class="container">
     <div class="py-8">
