@@ -65,61 +65,61 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
             <p class="text-text-secondary text-lg">NONE</p>
           </div>
         ) : (
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="works-list">
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4" id="works-list">
             {sortedWorks.map((work: any, index: number) => (
               work.data.projectUrl ? (
                 <a 
                   href={work.data.projectUrl} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  class="work-item card h-full flex flex-col motion-preset-slide-up-sm hover:scale-[1.02] transition-transform duration-300 group"
+                  class="work-item card h-full flex flex-col motion-preset-slide-up-sm hover:scale-[1.02] transition-transform duration-300 group p-3"
                   data-title={work.data.title.toLowerCase()}
                   data-description={work.data.description?.toLowerCase() || ''}
                   data-tags={work.data.tags.join(',')}
                 >
                   {/* プロジェクト画像 */}
                   {work.data.image && (
-                    <div class="mb-4">
+                    <div class="mb-3">
                       <img 
                         src={work.data.image} 
                         alt={work.data.title}
-                        class="w-full h-48 object-cover rounded-lg group-hover:brightness-110 transition-all duration-300"
+                        class="w-full aspect-square object-cover rounded-lg group-hover:brightness-110 transition-all duration-300"
                         loading="lazy"
                       />
                     </div>
                   )}
                   
                   <div class="flex-1 flex flex-col">
-                    <header class="mb-4">
-                      <h3 class="text-lg font-semibold text-orange-main mb-2 group-hover:text-orange-light transition-colors">
+                    <header class="mb-2">
+                      <p class="text-sm font-semibold text-orange-main mb-1 group-hover:text-orange-light transition-colors line-clamp-2">
                         {work.data.title}
-                      </h3>
+                      </p>
                       
-                      <div class="text-sm text-text-muted mb-3">
+                      <div class="text-xs text-text-muted">
                         <time datetime={work.data.pubDate.toISOString()}>
                           {work.data.pubDate.toLocaleDateString('ja-JP')}
                         </time>
-                        {work.data.updatedDate && (
-                          <span class="ml-2">
-                            (更新: {work.data.updatedDate.toLocaleDateString('ja-JP')})
-                          </span>
-                        )}
                       </div>
                     </header>
                     
                     {work.data.description && (
-                      <p class="text-text-secondary mb-4 flex-1">{work.data.description}</p>
+                      <p class="text-xs text-text-secondary mb-3 flex-1 line-clamp-2">{work.data.description}</p>
                     )}
                     
                     {/* タグ */}
                     {work.data.tags && work.data.tags.length > 0 && (
                       <div>
                         <div class="flex flex-wrap gap-2">
-                          {work.data.tags.map((tag: string) => (
-                            <span class="project-card-tech-tag">
+                          {work.data.tags.slice(0, 2).map((tag: string) => (
+                            <span class="project-card-tech-tag text-xs">
                               {tag}
                             </span>
                           ))}
+                          {work.data.tags.length > 2 && (
+                            <span class="text-xs text-text-muted">
+                              +{work.data.tags.length - 2}
+                            </span>
+                          )}
                         </div>
                       </div>
                     )}
@@ -128,54 +128,54 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
               ) : (
                 <a 
                   href={`/works/${work.data.slug}`}
-                  class="work-item card h-full flex flex-col motion-preset-slide-up-sm hover:scale-[1.02] transition-transform duration-300 group"
+                  class="work-item card h-full flex flex-col motion-preset-slide-up-sm hover:scale-[1.02] transition-transform duration-300 group p-3"
                   data-title={work.data.title.toLowerCase()}
                   data-description={work.data.description?.toLowerCase() || ''}
                   data-tags={work.data.tags.join(',')}
                 >
                   {/* プロジェクト画像 */}
                   {work.data.image && (
-                    <div class="mb-4">
+                    <div class="mb-3">
                       <img 
                         src={work.data.image} 
                         alt={work.data.title}
-                        class="w-full h-48 object-cover rounded-lg group-hover:brightness-110 transition-all duration-300"
+                        class="w-full aspect-square object-cover rounded-lg group-hover:brightness-110 transition-all duration-300"
                         loading="lazy"
                       />
                     </div>
                   )}
                   
                   <div class="flex-1 flex flex-col">
-                    <header class="mb-4">
-                      <h3 class="text-lg font-semibold text-orange-main mb-2 group-hover:text-orange-light transition-colors">
+                    <header class="mb-2">
+                      <p class="text-sm font-semibold text-orange-main mb-1 group-hover:text-orange-light transition-colors line-clamp-2">
                         {work.data.title}
-                      </h3>
+                      </p>
                       
-                      <div class="text-sm text-text-muted mb-3">
+                      <div class="text-xs text-text-muted">
                         <time datetime={work.data.pubDate.toISOString()}>
                           {work.data.pubDate.toLocaleDateString('ja-JP')}
                         </time>
-                        {work.data.updatedDate && (
-                          <span class="ml-2">
-                            (更新: {work.data.updatedDate.toLocaleDateString('ja-JP')})
-                          </span>
-                        )}
                       </div>
                     </header>
                     
                     {work.data.description && (
-                      <p class="text-text-secondary mb-4 flex-1">{work.data.description}</p>
+                      <p class="text-xs text-text-secondary mb-3 flex-1 line-clamp-2">{work.data.description}</p>
                     )}
                     
                     {/* タグ */}
                     {work.data.tags && work.data.tags.length > 0 && (
                       <div>
                         <div class="flex flex-wrap gap-2">
-                          {work.data.tags.map((tag: string) => (
-                            <span class="project-card-tech-tag">
+                          {work.data.tags.slice(0, 2).map((tag: string) => (
+                            <span class="project-card-tech-tag text-xs">
                               {tag}
                             </span>
                           ))}
+                          {work.data.tags.length > 2 && (
+                            <span class="text-xs text-text-muted">
+                              +{work.data.tags.length - 2}
+                            </span>
+                          )}
                         </div>
                       </div>
                     )}
@@ -203,7 +203,7 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
 		
   <script>
     // グローバル設定
-    const PAGE_SIZE = 6;
+    const PAGE_SIZE = 20;
     let currentPage = 1;
     let currentTag = 'all';
     let currentSearch = '';

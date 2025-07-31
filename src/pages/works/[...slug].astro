@@ -43,7 +43,7 @@ const toc = extractTocFromMarkdown(work.body || '');
             
             <div class="flex flex-wrap items-center gap-4 text-text-muted mb-6 text-sm sm:text-base">
               <time class="blog-card-date" datetime={work.data.pubDate.toISOString()}>
-                開始日: {work.data.pubDate.toLocaleDateString('ja-JP')}
+                投稿日: {work.data.pubDate.toLocaleDateString('ja-JP')}
               </time>
               {work.data.updatedDate && (
                 <span>
