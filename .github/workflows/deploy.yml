@@ -1,0 +1,112 @@
+name: Build and Deploy to Cloudflare
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+      
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Download content from R2
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
+        run: |
+          # Install AWS CLI
+          pip install awscli
+          
+          # Configure AWS CLI for R2
+          aws configure set aws_access_key_id $R2_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $R2_SECRET_ACCESS_KEY
+          aws configure set region auto
+          
+          # Create content directory if it doesn't exist
+          mkdir -p src/content
+          
+          # Download all objects from R2 bucket
+          aws s3 sync s3://${R2_BUCKET_NAME}/ src/content/ \
+            --endpoint-url https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com
+          
+          # List downloaded files for verification
+          echo "Downloaded content:"
+          find src/content -type f | head -20
+      
+      - name: Build site
+        run: pnpm build
+      
+      - name: Install Wrangler
+        run: npm install -g wrangler
+      
+      - name: Deploy to Cloudflare Workers
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          # Create _worker.js for Workers Sites
+          cat > dist/_worker.js << 'EOF'
+          export default {
+            async fetch(request, env) {
+              const url = new URL(request.url);
+              
+              // index.htmlへのリダイレクト処理
+              if (url.pathname.endsWith('/')) {
+                url.pathname += 'index.html';
+              } else if (!url.pathname.includes('.')) {
+                // 拡張子がない場合は.htmlを追加
+                url.pathname += '.html';
+              }
+              
+              // アセットを取得
+              const response = await env.ASSETS.fetch(url, request);
+              
+              // 404の場合は404.htmlを返す
+              if (response.status === 404) {
+                const notFoundResponse = await env.ASSETS.fetch(new URL('/404.html', request.url));
+                return new Response(notFoundResponse.body, {
+                  status: 404,
+                  headers: notFoundResponse.headers
+                });
+              }
+              
+              return response;
+            }
+          };
+          EOF
+          
+          # Deploy to Workers
+          wrangler deploy --env production

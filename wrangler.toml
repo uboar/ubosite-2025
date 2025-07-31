@@ -1,0 +1,23 @@
+name = "ubopage"
+main = "dist/_worker.js"
+compatibility_date = "2024-01-01"
+
+[site]
+bucket = "./dist"
+
+# ルーティング設定
+[[routes]]
+pattern = "uboar.net/*"
+zone_name = "uboar.net"
+
+# 環境変数（必要に応じて追加）
+[vars]
+# ENVIRONMENT = "production"
+
+# 本番環境設定
+[env.production]
+name = "ubopage-prod"
+routes = [
+  { pattern = "uboar.net/*", zone_name = "uboar.net" },
+  { pattern = "www.uboar.net/*", zone_name = "uboar.net" }
+]
