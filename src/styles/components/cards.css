@@ -39,7 +39,7 @@
 /* リンクカード（remarkEmbedLinks用） */
 .link-card {
   display: block;
-  background: rgba(26, 26, 26, 0.6);
+  background: rgba(15, 15, 15, 0.9);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 107, 53, 0.1);
@@ -120,9 +120,6 @@
 
 .link-card-content {
   padding: 1rem;
-  background: rgba(15, 15, 15, 0.9);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 
 .link-card-content h4 {

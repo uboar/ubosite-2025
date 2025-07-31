@@ -195,7 +195,8 @@
 
 /* 特別なコンテンツの処理 */
 .prose .youtube-embed,
-.prose .spotify-embed {
+.prose .spotify-embed,
+.prose .twitter-embed {
   max-width: 100%;
   margin: 1.5rem 0;
 }
@@ -205,6 +206,19 @@
   max-width: 100%;
   height: auto;
   aspect-ratio: 16 / 9;
+}
+
+.prose .twitter-embed {
+  display: flex;
+  justify-content: center;
+}
+
+.prose .twitter-embed blockquote {
+  border: none;
+  background: none;
+  padding: 0;
+  font-style: normal;
+  color: inherit;
 }
 
 .prose .link-card {
