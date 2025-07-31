@@ -1,11 +1,6 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "@layouts/Layout.astro";
-import Pagination from "@components/Pagination.astro";
-
-// URLからページ番号を取得
-const currentPage = Number(Astro.url.searchParams.get('page') || '1');
-const pageSize = 6;
 
 // 全ての投稿を取得
 const allPosts = await getCollection("blog");
@@ -13,28 +8,7 @@ const sortedPosts = allPosts.sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 
-// ページネーション計算
-const totalPages = Math.ceil(sortedPosts.length / pageSize);
-const startIndex = (currentPage - 1) * pageSize;
-const endIndex = startIndex + pageSize;
-const paginatedPosts = sortedPosts.slice(startIndex, endIndex);
-
-// ページオブジェクトを作成（既存のコンポーネントとの互換性のため）
-const page = {
-  data: paginatedPosts,
-  currentPage,
-  lastPage: totalPages,
-  url: {
-    prev: currentPage > 1 ? `/blog?page=${currentPage - 1}` : undefined,
-    next: currentPage < totalPages ? `/blog?page=${currentPage + 1}` : undefined,
-  },
-  start: startIndex,
-  end: Math.min(endIndex - 1, sortedPosts.length - 1),
-  total: sortedPosts.length,
-  size: pageSize,
-};
-
-const pageTitle = currentPage === 1 ? "BLOG" : `BLOG - ページ ${currentPage}`;
+const pageTitle = "BLOG";
 const allTags = [...new Set(allPosts.flatMap(post => post.data.tags))];
 ---
 
@@ -86,13 +60,13 @@ const allTags = [...new Set(allPosts.flatMap(post => post.data.tags))];
 
       <!-- 記事一覧 -->
       <div id="posts-container">
-        {page.data.length === 0 ? (
+        {sortedPosts.length === 0 ? (
           <div class="card text-center py-12">
             <p class="text-text-secondary text-lg">NONE</p>
           </div>
         ) : (
           <div class="grid-container spacing-lg" id="posts-list">
-            {page.data.map((post: any, index: number) => (
+            {sortedPosts.map((post: any, index: number) => (
               <a 
                 href={`/blog/${post.data.slug}`}
                 class="post-item blog-card motion-preset-slide-up-sm mb-2 block hover:scale-[1.02] transition-transform duration-300"
@@ -146,29 +120,40 @@ const allTags = [...new Set(allPosts.flatMap(post => post.data.tags))];
       </div>
 
       <!-- ページネーション -->
-      <Pagination 
-        currentPage={page.currentPage}
-        totalPages={page.lastPage}
-        baseUrl="/blog"
-      />
+      <div id="pagination-container" class="pagination">
+        <!-- JavaScriptで動的に生成 -->
+      </div>
     </div>
   </div>
 		
   <script>
-    // フィルタリング機能
+    // グローバル設定
+    const PAGE_SIZE = 6;
+    let currentPage = 1;
+    let currentTag = 'all';
+    let currentSearch = '';
+    
+    // DOM要素
     const searchInput = document.getElementById('search-input');
     const tagFilters = document.querySelectorAll('.tag-filter');
     const postItems = document.querySelectorAll('.post-item');
     const noResults = document.getElementById('no-results');
     const postsList = document.getElementById('posts-list');
+    const paginationContainer = document.getElementById('pagination-container');
     
-    let currentTag = 'all';
-    let currentSearch = '';
+    // 全ての投稿を配列として保持
+    const allPosts = Array.from(postItems).map(item => ({
+      element: item as HTMLElement,
+      title: (item as HTMLElement).dataset.title || '',
+      description: (item as HTMLElement).dataset.description || '',
+      tags: ((item as HTMLElement).dataset.tags?.split(',') || [])
+    }));
     
     // 検索機能
     searchInput?.addEventListener('input', (e) => {
       currentSearch = (e.target as HTMLInputElement).value.toLowerCase();
-      filterPosts();
+      currentPage = 1; // 検索時は1ページ目に戻る
+      updateDisplay();
     });
     
     // タグフィルター機能
@@ -185,47 +170,208 @@ const allTags = [...new Set(allPosts.flatMap(post => post.data.tags))];
         target.classList.remove('btn-outline');
         
         currentTag = target.dataset.tag || 'all';
-        filterPosts();
+        currentPage = 1; // タグ変更時は1ページ目に戻る
+        updateDisplay();
       });
     });
     
-    // フィルタリング実行
-    function filterPosts() {
-      let visibleCount = 0;
-      
-      postItems.forEach(post => {
-        const postElement = post as HTMLElement;
-        const title = postElement.dataset.title || '';
-        const description = postElement.dataset.description || '';
-        const tags = postElement.dataset.tags?.split(',') || [];
-        
+    // フィルタリングされた投稿を取得
+    function getFilteredPosts() {
+      return allPosts.filter(post => {
         // 検索条件チェック
         const matchesSearch = currentSearch === '' || 
-          title.includes(currentSearch) || 
-          description.includes(currentSearch);
+          post.title.includes(currentSearch) || 
+          post.description.includes(currentSearch);
         
         // タグ条件チェック
-        const matchesTag = currentTag === 'all' || tags.includes(currentTag);
+        const matchesTag = currentTag === 'all' || post.tags.includes(currentTag);
         
-        if (matchesSearch && matchesTag) {
-          postElement.style.display = 'block';
-          visibleCount++;
-        } else {
-          postElement.style.display = 'none';
+        return matchesSearch && matchesTag;
+      });
+    }
+    
+    // ページネーションを生成
+    function generatePagination(totalItems: number) {
+      const totalPages = Math.ceil(totalItems / PAGE_SIZE);
+      
+      if (totalPages <= 1) {
+        paginationContainer!.innerHTML = '';
+        return;
+      }
+      
+      let html = '<div class="pagination__container">';
+      
+      // ページ番号
+      html += '<div class="pagination__pages">';
+      
+      // ページ番号の生成ロジック
+      const maxVisible = 5;
+      let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+      let end = Math.min(totalPages, start + maxVisible - 1);
+      
+      if (end - start + 1 < maxVisible) {
+        start = Math.max(1, end - maxVisible + 1);
+      }
+      
+      if (start > 1) {
+        html += `<button class="btn btn-outline btn-sm pagination__button pagination__page" data-page="1">1</button>`;
+        if (start > 2) {
+          html += '<span class="pagination__ellipsis">...</span>';
         }
+      }
+      
+      for (let i = start; i <= end; i++) {
+        if (i === currentPage) {
+          html += `<span class="btn btn-primary btn-sm pagination__button pagination__current">${i}</span>`;
+        } else {
+          html += `<button class="btn btn-outline btn-sm pagination__button pagination__page" data-page="${i}">${i}</button>`;
+        }
+      }
+      
+      if (end < totalPages) {
+        if (end < totalPages - 1) {
+          html += '<span class="pagination__ellipsis">...</span>';
+        }
+        html += `<button class="btn btn-outline btn-sm pagination__button pagination__page" data-page="${totalPages}">${totalPages}</button>`;
+      }
+      
+      html += '</div>';
+      
+      html += '</div>';
+      html += `<div class="pagination__info">
+        <span class="text-sm text-text-muted">${totalPages} ページ中 ${currentPage} ページ目</span>
+      </div>`;
+      
+      paginationContainer!.innerHTML = html;
+      
+      // ページネーションボタンのイベントリスナー
+      paginationContainer!.querySelectorAll('[data-page]').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const page = parseInt((e.currentTarget as HTMLElement).dataset.page!);
+          currentPage = page;
+          updateDisplay();
+          // ページ上部にスクロール
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      });
+    }
+    
+    // 表示を更新
+    function updateDisplay() {
+      const filteredPosts = getFilteredPosts();
+      const totalItems = filteredPosts.length;
+      
+      // ページネーション計算
+      const startIndex = (currentPage - 1) * PAGE_SIZE;
+      const endIndex = startIndex + PAGE_SIZE;
+      const postsToShow = filteredPosts.slice(startIndex, endIndex);
+      
+      // 全ての投稿を非表示
+      allPosts.forEach(post => {
+        post.element.style.display = 'none';
+      });
+      
+      // 現在のページの投稿を表示
+      postsToShow.forEach(post => {
+        post.element.style.display = 'block';
       });
       
       // 結果がない場合の表示切り替え
-      if (visibleCount === 0) {
+      if (totalItems === 0) {
         if (postsList) postsList.style.display = 'none';
         if (noResults) noResults.classList.remove('hidden');
       } else {
         if (postsList) postsList.style.display = 'block';
         if (noResults) noResults.classList.add('hidden');
       }
+      
+      // ページネーションを生成
+      generatePagination(totalItems);
     }
     
     // 初期表示
-    filterPosts();
+    updateDisplay();
   </script>
+
+  <style>
+    .pagination {
+      margin-top: 3rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .pagination__container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .pagination__pages {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .pagination__button {
+      min-width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      border-radius: 0.5rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .pagination__button:hover:not(.pagination__current) {
+      transform: translateY(-1px);
+    }
+
+    .pagination__current {
+      pointer-events: none;
+    }
+
+    .pagination__ellipsis {
+      padding: 0.5rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      user-select: none;
+    }
+
+    .pagination__prev,
+    .pagination__next {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      min-width: auto;
+    }
+
+    .pagination__info {
+      text-align: center;
+    }
+
+    /* レスポンシブ対応 */
+    @media (max-width: 639px) {
+      .pagination__container {
+        gap: 0.25rem;
+      }
+      
+      .pagination__button {
+        min-width: 40px;
+        height: 40px;
+        font-size: 0.875rem;
+      }
+      
+      .pagination__prev,
+      .pagination__next {
+        padding: 0.5rem 0.75rem;
+      }
+    }
+  </style>
 </Layout>
