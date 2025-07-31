@@ -90,8 +90,8 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
                   {work.data.image && (
                     <div class="mb-4">
                       <img 
-                        src={work.data.image.url} 
-                        alt={work.data.image.alt}
+                        src={work.data.image} 
+                        alt={work.data.title}
                         class="w-full h-48 object-cover rounded-lg group-hover:brightness-110 transition-all duration-300"
                         loading="lazy"
                       />
@@ -147,8 +147,8 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
                   {work.data.image && (
                     <div class="mb-4">
                       <img 
-                        src={work.data.image.url} 
-                        alt={work.data.image.alt}
+                        src={work.data.image} 
+                        alt={work.data.title}
                         class="w-full h-48 object-cover rounded-lg group-hover:brightness-110 transition-all duration-300"
                         loading="lazy"
                       />

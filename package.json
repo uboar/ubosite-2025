@@ -3,8 +3,9 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
+    "sync": "node scripts/sync-content.js",
+    "dev": "pnpm sync && astro dev",
+    "build": "pnpm sync && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -19,8 +20,10 @@
   },
   "devDependencies": {
     "@astrojs/sitemap": "^3.4.2",
+    "@aws-sdk/client-s3": "^3.857.0",
     "@tabler/icons": "^3.34.1",
     "@tailwindcss/typography": "^0.5.16",
+    "dotenv": "^17.2.1",
     "gray-matter": "^4.0.3",
     "tailwindcss-motion": "^1.1.1",
     "unist-util-visit": "^5.0.0"

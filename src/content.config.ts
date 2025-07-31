@@ -30,10 +30,7 @@ const works = defineCollection({
     tags: z.array(z.string()).default([]),
     status: z.enum(['completed', 'in-progress', 'archived']).default('completed'),
     projectUrl: z.string().url().optional(),
-    image: z.object({
-      url: z.string(),
-      alt: z.string()
-    }).optional(),
+    image: z.string().optional(),
   })
 });
 

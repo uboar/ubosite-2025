@@ -69,8 +69,8 @@ const toc = extractTocFromMarkdown(work.body || '');
             {work.data.image && (
               <div class="mb-8">
                 <img 
-                  src={work.data.image.url} 
-                  alt={work.data.image.alt}
+                  src={work.data.image} 
+                  alt={work.data.title}
                   class="w-full h-auto rounded-xl shadow-lg max-w-full"
                   loading="lazy"
                 />
