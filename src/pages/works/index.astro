@@ -72,11 +72,10 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
                   href={work.data.projectUrl} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  class="work-item card h-full flex flex-col motion-preset-slide-up-sm hover:scale-[1.02] transition-transform duration-300 group block"
+                  class="work-item card h-full flex flex-col motion-preset-slide-up-sm hover:scale-[1.02] transition-transform duration-300 group"
                   data-title={work.data.title.toLowerCase()}
                   data-description={work.data.description?.toLowerCase() || ''}
                   data-tags={work.data.tags.join(',')}
-                  style={`animation-delay: ${0.2 + index * 0.1}s`}
                 >
                   {/* プロジェクト画像 */}
                   {work.data.image && (
@@ -129,11 +128,10 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
               ) : (
                 <a 
                   href={`/works/${work.data.slug}`}
-                  class="work-item card h-full flex flex-col motion-preset-slide-up-sm hover:scale-[1.02] transition-transform duration-300 group block"
+                  class="work-item card h-full flex flex-col motion-preset-slide-up-sm hover:scale-[1.02] transition-transform duration-300 group"
                   data-title={work.data.title.toLowerCase()}
                   data-description={work.data.description?.toLowerCase() || ''}
                   data-tags={work.data.tags.join(',')}
-                  style={`animation-delay: ${0.2 + index * 0.1}s`}
                 >
                   {/* プロジェクト画像 */}
                   {work.data.image && (
@@ -348,9 +346,18 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
         work.element.style.display = 'none';
       });
       
-      // 現在のページの作品を表示
-      worksToShow.forEach(work => {
-        work.element.style.display = 'block';
+      // 現在のページの作品を表示とアニメーション遅延設定
+      worksToShow.forEach((work, index) => {
+        const element = work.element;
+        element.style.display = 'block';
+        
+        // アニメーションをリセット
+        element.classList.remove('motion-preset-slide-up-sm');
+        void element.offsetWidth; // リフローを強制
+        element.classList.add('motion-preset-slide-up-sm');
+        
+        // アニメーション遅延を動的に設定
+        element.style.animationDelay = `${0.1 + index * 0.1}s`;
       });
       
       // 結果がない場合の表示切り替え

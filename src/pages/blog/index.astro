@@ -73,7 +73,6 @@ const allTags = [...new Set(allPosts.flatMap(post => post.data.tags))];
                 data-title={post.data.title.toLowerCase()}
                 data-description={post.data.description?.toLowerCase() || ''}
                 data-tags={post.data.tags.join(',')}
-                style={`animation-delay: ${0.2 + index * 0.1}s`}
               >
                 <article>
                   <div class="blog-card-content">
@@ -271,9 +270,18 @@ const allTags = [...new Set(allPosts.flatMap(post => post.data.tags))];
         post.element.style.display = 'none';
       });
       
-      // 現在のページの投稿を表示
-      postsToShow.forEach(post => {
-        post.element.style.display = 'block';
+      // 現在のページの投稿を表示とアニメーション遅延設定
+      postsToShow.forEach((post, index) => {
+        const element = post.element;
+        element.style.display = 'block';
+        
+        // アニメーションをリセット
+        element.classList.remove('motion-preset-slide-up-sm');
+        void element.offsetWidth; // リフローを強制
+        element.classList.add('motion-preset-slide-up-sm');
+        
+        // アニメーション遅延を動的に設定
+        element.style.animationDelay = `${0.1 + index * 0.1}s`;
       });
       
       // 結果がない場合の表示切り替え
