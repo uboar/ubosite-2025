@@ -18,6 +18,9 @@ const { Content } = await render(post);
 
 // 目次を抽出
 const toc = extractTocFromMarkdown(post.body || '');
+
+// 構造化データ用の画像URL
+const articleImage = post.data.image?.url || new URL(`/og/blog/${post.data.slug}.png`, Astro.site || 'https://uboar.net').href;
 ---
 
 <Layout 
@@ -70,6 +73,7 @@ const toc = extractTocFromMarkdown(post.body || '');
                   src={post.data.image.url} 
                   alt={post.data.image.alt}
                   class="w-full h-auto rounded-xl shadow-lg max-w-full"
+                  loading="lazy"
                 />
               </div>
             )}
@@ -95,4 +99,36 @@ const toc = extractTocFromMarkdown(post.body || '');
       </div>
     </div>
   </div>
+  
+  <!-- 記事用構造化データ -->
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "${post.data.title}",
+      "description": "${post.data.description || ''}",
+      "author": {
+        "@type": "Person",
+        "name": "UBOAR",
+        "url": "https://uboar.net"
+      },
+      "datePublished": "${post.data.pubDate.toISOString()}",
+      ${post.data.updatedDate ? `"dateModified": "${post.data.updatedDate.toISOString()}",` : ''}
+      "image": "${articleImage}",
+      "publisher": {
+        "@type": "Organization",
+        "name": "UBOPAGE",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://uboar.net/favicon.svg"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "${new URL(`/blog/${post.data.slug}`, Astro.site || 'https://uboar.net').href}"
+      },
+      ${post.data.tags && post.data.tags.length > 0 ? `"keywords": "${post.data.tags.join(', ')}",` : ''}
+      "wordCount": ${post.body ? post.body.split(/\s+/).length : 0}
+    }
+  </script>
 </Layout>

@@ -43,6 +43,14 @@ const defaultOgImage = new URL('/og/home.png', site).href;
   <meta name="twitter:title" content={title}>
   <meta name="twitter:description" content={description}>
   <meta name="twitter:image" content={ogImage || defaultOgImage}>
+  <meta name="twitter:site" content="@uboar">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href={new URL(Astro.url.pathname, site).href}>
+  
+  <!-- Additional SEO Meta Tags -->
+  <meta name="author" content="UBOAR">
+  <meta name="robots" content="index, follow">
   
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -50,9 +58,41 @@ const defaultOgImage = new URL('/og/home.png', site).href;
   <!-- Preconnect to external domains -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://content.uboar.net">
+  <link rel="dns-prefetch" href="https://content.uboar.net">
+  
+  <!-- Fonts with font-display: swap for better performance -->
+  <style is:inline>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+  </style>
   
   <!-- Prefetch and preload critical resources -->
   <link rel="preload" href="/assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+  
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "UBOPAGE",
+      "url": "https://uboar.net",
+      "description": "UBOARの個人サイト。プログラミング、ゲーム開発、イラスト、音楽などの創作活動を公開しています。",
+      "author": {
+        "@type": "Person",
+        "name": "UBOAR",
+        "url": "https://uboar.net"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://uboar.net/search?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+  </script>
 </head>
 <body class={`bg-pattern-${backgroundPattern} particles motion-preset-fade`}>
   <Header currentPath={currentPath} />

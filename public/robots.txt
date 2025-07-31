@@ -1,0 +1,21 @@
+# robots.txt for https://uboar.net
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://uboar.net/sitemap-index.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Disallow access to specific paths if needed
+# Disallow: /private/
+# Disallow: /api/
+
+# Allow search engines to index images
+User-agent: Googlebot-Image
+Allow: /
+
+# Allow search engines to index videos
+User-agent: Googlebot-Video
+Allow: /

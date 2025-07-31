@@ -93,6 +93,7 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
                         src={work.data.image.url} 
                         alt={work.data.image.alt}
                         class="w-full h-48 object-cover rounded-lg group-hover:brightness-110 transition-all duration-300"
+                        loading="lazy"
                       />
                     </div>
                   )}
@@ -149,6 +150,7 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
                         src={work.data.image.url} 
                         alt={work.data.image.alt}
                         class="w-full h-48 object-cover rounded-lg group-hover:brightness-110 transition-all duration-300"
+                        loading="lazy"
                       />
                     </div>
                   )}

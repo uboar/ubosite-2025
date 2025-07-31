@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import { rehypeHeadingIds } from '@astrojs/markdown-remark';
 import ogImageIntegration from './integrations/og-image/index.js';
+import sitemap from '@astrojs/sitemap';
 
 import { visit } from "unist-util-visit";
 
@@ -389,7 +390,7 @@ function remarkWikiLinks() {
 export default defineConfig({
   site: "https://uboar.net",
   prefetch: true,
-  integrations: [ogImageIntegration()],
+  integrations: [ogImageIntegration(), sitemap()],
   markdown: {
     remarkPlugins: [remarkEmbedLinks, remarkWikiLinks],
     rehypePlugins: [
