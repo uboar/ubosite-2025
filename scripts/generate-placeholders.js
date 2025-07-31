@@ -2,6 +2,7 @@ import sharp from 'sharp';
 import satori from 'satori';
 import fs from 'fs/promises';
 import path from 'path';
+import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -117,12 +118,12 @@ function PlaceholderTemplate({ category }) {
         {
           type: 'svg',
           props: {
-            width: 160,
-            height: 160,
-            viewBox: '0 0 160 160',
+            width: 120,
+            height: 120,
+            viewBox: '0 0 120 120',
             style: {
-              marginBottom: 50,
-              opacity: 0.7
+              marginBottom: 40,
+              opacity: 0.8
             },
             children: getIconForCategory(category, colors)
           }
@@ -131,11 +132,11 @@ function PlaceholderTemplate({ category }) {
           type: 'div',
           props: {
             style: {
-              fontSize: 64,
+              fontSize: 56,
               fontWeight: 'bold',
-              marginBottom: 20,
+              marginBottom: 16,
               color: colors.primary,
-              letterSpacing: '6px',
+              letterSpacing: '4px',
               textTransform: 'uppercase',
               opacity: 0.9
             },
@@ -146,11 +147,10 @@ function PlaceholderTemplate({ category }) {
           type: 'div',
           props: {
             style: {
-              fontSize: 24,
+              fontSize: 20,
               color: '#a0a0a0',
-              letterSpacing: '3px',
-              opacity: 0.7,
-              marginBottom: 10
+              letterSpacing: '2px',
+              opacity: 0.6
             },
             children: 'uboar.net'
           }
@@ -162,166 +162,179 @@ function PlaceholderTemplate({ category }) {
 
 // カテゴリー別のアイコンを返す関数
 function getIconForCategory(category, colors) {
-  switch (category) {
-    case 'PRIMITIVE':
-      // 基本的な幾何学図形
-      return [
-        {
-          type: 'circle',
-          props: {
-            cx: 80,
-            cy: 80,
-            r: 70,
-            fill: 'none',
-            stroke: colors.primary,
-            strokeWidth: 3,
-            opacity: 0.5
-          }
-        },
-        {
-          type: 'polygon',
-          props: {
-            points: '80,30 130,110 30,110',
-            fill: 'none',
-            stroke: colors.secondary,
-            strokeWidth: 3,
-            opacity: 0.7
-          }
-        },
-        {
-          type: 'rect',
-          props: {
-            x: 60,
-            y: 60,
-            width: 40,
-            height: 40,
-            fill: colors.accent,
-            opacity: 0.3
-          }
-        }
-      ];
+  // カテゴリーに応じたアイコンファイル名をマッピング
+  const iconMap = {
+    'PRIMITIVE': 'shape',
+    'SERVICE': 'settings',
+    'EVENT': 'calendar-event',
+    'WORKS': 'briefcase'
+  };
+  
+  const iconName = iconMap[category] || 'photo';
+  
+  try {
+    // Tabler Iconsからアイコンを読み込み
+    const iconPath = path.join(process.cwd(), 'node_modules', '@tabler', 'icons', 'icons', 'outline', `${iconName}.svg`);
+    const iconSvg = readFileSync(iconPath, 'utf-8');
     
-    case 'SERVICE':
-      // ギアアイコン
-      return [
-        {
-          type: 'path',
-          props: {
-            d: 'M80 50 L80 30 M80 130 L80 110 M110 80 L130 80 M30 80 L50 80 M103 57 L117 43 M43 117 L57 103 M103 103 L117 117 M43 43 L57 57',
-            stroke: colors.primary,
-            strokeWidth: 3,
-            strokeLinecap: 'round',
-            fill: 'none',
-            opacity: 0.7
-          }
-        },
-        {
-          type: 'circle',
-          props: {
-            cx: 80,
-            cy: 80,
-            r: 30,
-            fill: 'none',
-            stroke: colors.secondary,
-            strokeWidth: 3,
-            opacity: 0.8
-          }
-        },
-        {
-          type: 'circle',
-          props: {
-            cx: 80,
-            cy: 80,
-            r: 15,
-            fill: colors.accent,
-            opacity: 0.4
-          }
-        }
-      ];
+    // SVG文字列をパースして、必要な部分を抽出
+    const pathMatch = iconSvg.match(/<path[^>]*d="([^"]+)"/g);
+    const circleMatch = iconSvg.match(/<circle[^>]*>/g);
+    const rectMatch = iconSvg.match(/<rect[^>]*>/g);
+    const lineMatch = iconSvg.match(/<line[^>]*>/g);
+    const polygonMatch = iconSvg.match(/<polygon[^>]*>/g);
+    const polylineMatch = iconSvg.match(/<polyline[^>]*>/g);
     
-    case 'EVENT':
-      // カレンダーアイコン
-      return [
-        {
-          type: 'rect',
-          props: {
-            x: 40,
-            y: 50,
-            width: 80,
-            height: 80,
-            rx: 8,
-            fill: 'none',
-            stroke: colors.primary,
-            strokeWidth: 3,
-            opacity: 0.7
-          }
-        },
-        {
-          type: 'line',
-          props: {
-            x1: 40,
-            y1: 70,
-            x2: 120,
-            y2: 70,
-            stroke: colors.secondary,
-            strokeWidth: 3,
-            opacity: 0.6
-          }
-        },
-        {
-          type: 'line',
-          props: {
-            x1: 55,
-            y1: 40,
-            x2: 55,
-            y2: 60,
-            stroke: colors.primary,
-            strokeWidth: 3,
-            strokeLinecap: 'round',
-            opacity: 0.8
-          }
-        },
-        {
-          type: 'line',
-          props: {
-            x1: 105,
-            y1: 40,
-            x2: 105,
-            y2: 60,
-            stroke: colors.primary,
-            strokeWidth: 3,
-            strokeLinecap: 'round',
-            opacity: 0.8
-          }
-        },
-        {
-          type: 'circle',
-          props: {
-            cx: 80,
-            cy: 100,
-            r: 8,
-            fill: colors.accent,
-            opacity: 0.6
-          }
-        }
-      ];
+    const elements = [];
     
-    default:
-      // デフォルトアイコン
-      return [
-        {
-          type: 'circle',
-          props: {
-            cx: 80,
-            cy: 80,
-            r: 70,
-            fill: 'none',
-            stroke: colors.primary,
-            strokeWidth: 3,
-            opacity: 0.5
-          }
+    // パス要素を処理
+    if (pathMatch) {
+      pathMatch.forEach((path, index) => {
+        const dMatch = path.match(/d="([^"]+)"/);
+        if (dMatch) {
+          elements.push({
+            type: 'path',
+            props: {
+              d: dMatch[1],
+              fill: 'none',
+              stroke: index === 0 ? colors.primary : colors.secondary,
+              strokeWidth: 1.5,
+              strokeLinecap: 'round',
+              strokeLinejoin: 'round',
+              transform: 'translate(60, 60) scale(3.5) translate(-12, -12)',  // 中央配置
+              opacity: 1
+            }
+          });
         }
-      ];
+      });
+    }
+    
+    // 円要素を処理
+    if (circleMatch) {
+      circleMatch.forEach((circle) => {
+        const cxMatch = circle.match(/cx="([^"]+)"/);
+        const cyMatch = circle.match(/cy="([^"]+)"/);
+        const rMatch = circle.match(/r="([^"]+)"/);
+        
+        if (cxMatch && cyMatch && rMatch) {
+          elements.push({
+            type: 'circle',
+            props: {
+              cx: (parseFloat(cxMatch[1]) - 12) * 3.5 + 60,
+              cy: (parseFloat(cyMatch[1]) - 12) * 3.5 + 60,
+              r: parseFloat(rMatch[1]) * 3.5,
+              fill: 'none',
+              stroke: colors.accent,
+              strokeWidth: 1.5,
+              opacity: 1
+            }
+          });
+        }
+      });
+    }
+    
+    // 矩形要素を処理
+    if (rectMatch) {
+      rectMatch.forEach((rect) => {
+        const xMatch = rect.match(/x="([^"]+)"/);
+        const yMatch = rect.match(/y="([^"]+)"/);
+        const widthMatch = rect.match(/width="([^"]+)"/);
+        const heightMatch = rect.match(/height="([^"]+)"/);
+        const rxMatch = rect.match(/rx="([^"]+)"/);
+        
+        if (xMatch && yMatch && widthMatch && heightMatch) {
+          elements.push({
+            type: 'rect',
+            props: {
+              x: (parseFloat(xMatch[1]) - 12) * 3.5 + 60,
+              y: (parseFloat(yMatch[1]) - 12) * 3.5 + 60,
+              width: parseFloat(widthMatch[1]) * 3.5,
+              height: parseFloat(heightMatch[1]) * 3.5,
+              rx: rxMatch ? parseFloat(rxMatch[1]) * 3.5 : 0,
+              fill: 'none',
+              stroke: colors.primary,
+              strokeWidth: 1.5,
+              opacity: 1
+            }
+          });
+        }
+      });
+    }
+    
+    // ライン要素を処理
+    if (lineMatch) {
+      lineMatch.forEach((line) => {
+        const x1Match = line.match(/x1="([^"]+)"/);
+        const y1Match = line.match(/y1="([^"]+)"/);
+        const x2Match = line.match(/x2="([^"]+)"/);
+        const y2Match = line.match(/y2="([^"]+)"/);
+        
+        if (x1Match && y1Match && x2Match && y2Match) {
+          elements.push({
+            type: 'line',
+            props: {
+              x1: (parseFloat(x1Match[1]) - 12) * 3.5 + 60,
+              y1: (parseFloat(y1Match[1]) - 12) * 3.5 + 60,
+              x2: (parseFloat(x2Match[1]) - 12) * 3.5 + 60,
+              y2: (parseFloat(y2Match[1]) - 12) * 3.5 + 60,
+              stroke: colors.secondary,
+              strokeWidth: 1.5,
+              strokeLinecap: 'round',
+              opacity: 1
+            }
+          });
+        }
+      });
+    }
+    
+    // ポリライン要素を処理
+    if (polylineMatch) {
+      polylineMatch.forEach((polyline) => {
+        const pointsMatch = polyline.match(/points="([^"]+)"/);
+        
+        if (pointsMatch) {
+          const scaledPoints = pointsMatch[1]
+            .split(' ')
+            .map(point => {
+              const [x, y] = point.split(',');
+              return `${(parseFloat(x) - 12) * 3.5 + 60},${(parseFloat(y) - 12) * 3.5 + 60}`;
+            })
+            .join(' ');
+          
+          elements.push({
+            type: 'polyline',
+            props: {
+              points: scaledPoints,
+              fill: 'none',
+              stroke: colors.primary,
+              strokeWidth: 1.5,
+              strokeLinecap: 'round',
+              strokeLinejoin: 'round',
+              opacity: 1
+            }
+          });
+        }
+      });
+    }
+    
+    return elements;
+  } catch (error) {
+    console.warn(`Icon ${iconName} not found, using fallback`);
+    // フォールバックアイコン
+    return [{
+      type: 'rect',
+      props: {
+        x: 70,
+        y: 70,
+        width: 80,
+        height: 80,
+        rx: 8,
+        fill: 'none',
+        stroke: colors.primary,
+        strokeWidth: 3,
+        opacity: 1
+      }
+    }];
   }
 }
 
