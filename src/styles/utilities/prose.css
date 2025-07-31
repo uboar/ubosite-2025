@@ -145,6 +145,48 @@
   margin: 1.5rem 0;
 }
 
+/* 音声プレーヤー */
+.prose audio {
+  width: 90%;
+  max-width: 90%;
+  height: 54px;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  margin-left: 1.5rem;
+  border-radius: 100rem;
+  background-color: var(--bg-secondary);
+  transition: all 0.3s ease;
+}
+
+.prose audio:hover {
+  border-color: var(--orange-main);
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.2);
+}
+
+.prose audio::-webkit-media-controls-panel {
+  background-color: var(--bg-tertiary);
+}
+
+.prose audio::-webkit-media-controls-play-button,
+.prose audio::-webkit-media-controls-mute-button {
+  filter: brightness(0) invert(1);
+  transition: all 0.3s ease;
+}
+
+.prose audio::-webkit-media-controls-play-button:hover,
+.prose audio::-webkit-media-controls-mute-button:hover {
+  filter: brightness(0) invert(1) drop-shadow(0 0 3px var(--orange-main));
+}
+
+.prose audio::-webkit-media-controls-current-time-display,
+.prose audio::-webkit-media-controls-time-remaining-display {
+  color: var(--orange-main);
+}
+
+.prose audio::-webkit-media-controls-timeline {
+  filter: brightness(0.4);
+}
+
 /* 水平線 */
 .prose hr {
   border: none;
@@ -196,7 +238,8 @@
 /* 特別なコンテンツの処理 */
 .prose .youtube-embed,
 .prose .spotify-embed,
-.prose .twitter-embed {
+.prose .twitter-embed,
+.prose .audio-embed {
   max-width: 100%;
   margin: 1.5rem 0;
 }

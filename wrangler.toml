@@ -1,14 +1,8 @@
 name = "ubopage"
-main = "dist/_worker.js"
 compatibility_date = "2024-01-01"
 
-[site]
-bucket = "./dist"
-
-# ルーティング設定
-[[routes]]
-pattern = "uboar.net/*"
-zone_name = "uboar.net"
+[assets]
+directory = "./dist"
 
 # 環境変数（必要に応じて追加）
 [vars]

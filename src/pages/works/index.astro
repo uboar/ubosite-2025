@@ -3,20 +3,38 @@ import { getCollection } from "astro:content";
 import Layout from "@layouts/Layout.astro";
 import Pagination from "@components/Pagination.astro";
 
-export async function getStaticPaths({ paginate }: { paginate: any }) {
-  const allWorks = await getCollection("works");
-  const sortedWorks = allWorks.sort(
-    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-  );
+// URLからページ番号を取得
+const currentPage = Number(Astro.url.searchParams.get('page') || '1');
+const pageSize = 6;
 
-  return paginate(sortedWorks, { pageSize: 6 });
-}
-
-const { page } = Astro.props as { page: any };
-const pageTitle = page.currentPage === 1 ? "WORKS" : `WORKS - ページ ${page.currentPage}`;
-
-// 全てのタグを抽出（フィルター用）
+// 全ての作品を取得
 const allWorks = await getCollection("works");
+const sortedWorks = allWorks.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+// ページネーション計算
+const totalPages = Math.ceil(sortedWorks.length / pageSize);
+const startIndex = (currentPage - 1) * pageSize;
+const endIndex = startIndex + pageSize;
+const paginatedWorks = sortedWorks.slice(startIndex, endIndex);
+
+// ページオブジェクトを作成（既存のコンポーネントとの互換性のため）
+const page = {
+  data: paginatedWorks,
+  currentPage,
+  lastPage: totalPages,
+  url: {
+    prev: currentPage > 1 ? `/works?page=${currentPage - 1}` : undefined,
+    next: currentPage < totalPages ? `/works?page=${currentPage + 1}` : undefined,
+  },
+  start: startIndex,
+  end: Math.min(endIndex - 1, sortedWorks.length - 1),
+  total: sortedWorks.length,
+  size: pageSize,
+};
+
+const pageTitle = currentPage === 1 ? "WORKS" : `WORKS - ページ ${currentPage}`;
 const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
 ---
 

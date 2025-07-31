@@ -304,18 +304,27 @@ function remarkWikiLinks() {
         }
         // 拡張子があり、assetsで始まらない場合はassets/を前に追加
         else if (
-          path.match(/\.(jpe?g|png|gif|webp|avif|svg|mp4|webm|mov)$/i) &&
+          path.match(/\.(jpe?g|png|gif|webp|avif|svg|mp4|webm|mov|mp3|wav|ogg|m4a|flac|aac)$/i) &&
           !path.includes("/")
         ) {
           r2Url = `https://content.uboar.net/assets/${path}`;
         }
         // それ以外の場合（既に完全なURLの場合など）はそのまま
+        
+        // URLエンコード（スペースなどの特殊文字を処理）
+        r2Url = encodeURI(r2Url);
 
         if (path.match(/\.(mp4|webm|mov)$/i)) {
           // 動画
           parts.push({
             type: "html",
             value: `<video src="${r2Url}" controls width="100%" alt="${displayText}"></video>`,
+          });
+        } else if (path.match(/\.(mp3|wav|ogg|m4a|flac|aac)$/i)) {
+          // 音声
+          parts.push({
+            type: "html",
+            value: `<div class="audio-embed"><audio src="${r2Url}" controls alt="${displayText}"></audio></div>`,
           });
         } else {
           // 画像 - 直接HTMLとして出力 ASTノードが悪さをする(原因不明)
