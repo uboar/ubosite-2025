@@ -9,12 +9,9 @@ const blog = defineCollection({
     slug: z.string(),
     featured: z.boolean(),
     pubDate: z.coerce.date(),
-    updatedDate: z.coerce.date().optional(),
+    updatedDate: z.coerce.date().optional().nullable(),
     tags: z.array(z.string()).default([]),
-    image: z.object({
-      url: z.string(),
-      alt: z.string()
-    }).optional(),
+    image: z.string().optional(),
   })
 });
 
@@ -26,10 +23,10 @@ const works = defineCollection({
     slug: z.string(),
     featured: z.boolean(),
     pubDate: z.coerce.date(),
-    updatedDate: z.coerce.date().optional(),
+    updatedDate: z.coerce.date().optional().nullable(),
     tags: z.array(z.string()).default([]),
     status: z.enum(['completed', 'in-progress', 'archived']).default('completed'),
-    projectUrl: z.string().url().optional(),
+    projectUrl: z.string().url().optional().nullable(),
     image: z.string().optional(),
   })
 });
@@ -45,6 +42,8 @@ const links = defineCollection({
     isActive: z.boolean().default(true),
     icon: z.string().optional(),
     iconImage: z.string().optional(),
+    iconLibrary: z.enum(['tabler', 'emoji']).optional(),
+    iconName: z.string().optional(),
     iconSize: z.number().default(24),
     backgroundColor: z.string().optional(),
     textColor: z.string().optional(),

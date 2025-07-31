@@ -20,7 +20,7 @@ const { Content } = await render(post);
 const toc = extractTocFromMarkdown(post.body || '');
 
 // 構造化データ用の画像URL
-const articleImage = post.data.image?.url || new URL(`/og/blog/${post.data.slug}.png`, Astro.site || 'https://uboar.net').href;
+const articleImage = post.data.image || new URL(`/og/blog/${post.data.slug}.png`, Astro.site || 'https://uboar.net').href;
 ---
 
 <Layout 
@@ -70,8 +70,8 @@ const articleImage = post.data.image?.url || new URL(`/og/blog/${post.data.slug}
             {post.data.image && (
               <div class="mb-8">
                 <img 
-                  src={post.data.image.url} 
-                  alt={post.data.image.alt}
+                  src={post.data.image} 
+                  alt={post.data.title}
                   class="w-full h-auto rounded-xl shadow-lg max-w-full"
                   loading="lazy"
                 />

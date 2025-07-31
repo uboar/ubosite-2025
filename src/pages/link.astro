@@ -4,7 +4,7 @@ import Layout from "@layouts/Layout.astro";
 import fs from "fs";
 import path from "path";
 
-const pageTitle = "リンクツリー";
+const pageTitle = "LINK";
 const allLinks = await getCollection("links");
 
 // contentフォルダからアイコンを読み込む関数
@@ -36,14 +36,15 @@ const groupedLinks = activeLinks.reduce(
   {} as Record<string, typeof activeLinks>
 );
 
-// カテゴリの日本語名マッピング
-const categoryNames: Record<string, string> = {
-  creative: "CREATIVE",
-  social: "SOCIAL",
-  service: "SERVICE",
-  blog: "WRITING",
-  contact: "CONTACT",
-  other: "OTHER",
+// Tablerアイコンを取得する関数
+const getTablerIcon = (iconName: string, style: 'filled' | 'outline' = 'outline') => {
+  try {
+    const iconPath = path.join(process.cwd(), 'node_modules/@tabler/icons/icons', style, `${iconName}.svg`);
+    return fs.readFileSync(iconPath, 'utf-8');
+  } catch (error) {
+    console.warn(`Tabler icon not found: ${iconName}`);
+    return null;
+  }
 };
 ---
 
@@ -73,7 +74,7 @@ const categoryNames: Record<string, string> = {
             uboar
           </h1>
           <p class="text-text-secondary text-sm">
-            NICONICO MEDLEY / DTM / ILLUST / VIDEO / ELECTRIC DEV / VOICE SYNTHESIS / WEB DEV etc...
+            NICONICO_MEDLEY / DTM / ILLUST / VIDEO / DJ / VJ / ELECTRIC_DEV / WEB_DEV / VOICE_SYNTHESIS etc...
             <br />
             <br />
             CONTACT : uboaruboar@gmail.com
@@ -90,7 +91,7 @@ const categoryNames: Record<string, string> = {
                   style={`animation-delay: ${0.3 + categoryIndex * 0.1}s`}
                 >
                   <h2 class="text-2xl font-bold text-center mb-6 text-orange-main">
-                    {categoryNames[category] || category}
+                    {category}
                   </h2>
                   <div class="space-y-4">
                     {links.map((link, linkIndex) => (
@@ -98,18 +99,29 @@ const categoryNames: Record<string, string> = {
                         href={link.data.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="card block w-full p-6 hover:scale-105 transition-all duration-300 group motion-preset-slide-up-sm"
+                        class="card block w-full p-4 hover:scale-[1.02] transition-all duration-300 group motion-preset-slide-up-sm"
                         style={`animation-delay: ${0.4 + categoryIndex * 0.1 + linkIndex * 0.05}s; ${link.data.backgroundColor ? `background: linear-gradient(135deg, ${link.data.backgroundColor}, ${link.data.backgroundColor}dd);` : ""}`}
                       >
-                        <div class="flex items-center justify-between">
-                          <div class="flex items-center space-x-4">
-                            {/* アイコン表示 - 画像ファイル優先、次に絵文字 */}
+                        <div class="flex items-center justify-between h-full">
+                          <div class="flex items-center space-x-3">
+                            {/* アイコン表示 - 優先順位: iconImage > iconLibrary > icon */}
                             {link.data.iconImage ? (
                               <div
                                 class="flex-shrink-0 transition-transform group-hover:scale-110"
                                 style={`width: ${link.data.iconSize || 32}px; height: ${link.data.iconSize || 32}px;`}
                                 set:html={getIconContent(link.data.iconImage)}
                               />
+                            ) : link.data.iconLibrary === 'tabler' && link.data.iconName ? (
+                              (() => {
+                                const iconSvg = getTablerIcon(link.data.iconName);
+                                return iconSvg ? (
+                                  <div
+                                    class="flex-shrink-0 transition-transform group-hover:scale-110"
+                                    style={`width: ${link.data.iconSize || 24}px; height: ${link.data.iconSize || 24}px; color: ${link.data.textColor || 'currentColor'};`}
+                                    set:html={iconSvg}
+                                  />
+                                ) : null;
+                              })()
                             ) : (
                               link.data.icon && (
                                 <span class="text-3xl flex-shrink-0 transition-transform group-hover:scale-110">
@@ -117,9 +129,9 @@ const categoryNames: Record<string, string> = {
                                 </span>
                               )
                             )}
-                            <div>
+                            <div class="flex flex-col justify-center -mb-3">
                               <h3
-                                class="font-semibold text-lg group-hover:text-orange-light transition-colors"
+                                class="font-semibold text-lg group-hover:text-orange-light transition-colors leading-tight"
                                 style={
                                   link.data.textColor
                                     ? `color: ${link.data.textColor}`
@@ -130,7 +142,7 @@ const categoryNames: Record<string, string> = {
                               </h3>
                               {link.data.description && (
                                 <p
-                                  class="text-sm mt-1 text-text-muted"
+                                  class="text-sm mt-1 text-text-muted leading-tight"
                                   style={
                                     link.data.textColor
                                       ? `color: ${link.data.textColor}; opacity: 0.8`
@@ -143,7 +155,7 @@ const categoryNames: Record<string, string> = {
                             </div>
                           </div>
                           <svg
-                            class="w-6 h-6 text-orange-accent group-hover:text-orange-light transition-all transform group-hover:translate-x-1"
+                            class="w-5 h-5 text-orange-accent group-hover:text-orange-light transition-all transform group-hover:translate-x-1"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
