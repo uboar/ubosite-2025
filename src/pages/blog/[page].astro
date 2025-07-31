@@ -75,45 +75,46 @@ const allTags = [...new Set(allPosts.flatMap(post => post.data.tags))];
         ) : (
           <div class="grid-container spacing-lg" id="posts-list">
             {page.data.map((post: any, index: number) => (
-              <article 
-                class="post-item blog-card motion-preset-slide-up-sm mb-2"
+              <a 
+                href={`/blog/${post.data.slug}`}
+                class="post-item blog-card motion-preset-slide-up-sm mb-2 block hover:scale-[1.02] transition-transform duration-300"
                 data-title={post.data.title.toLowerCase()}
                 data-description={post.data.description?.toLowerCase() || ''}
                 data-tags={post.data.tags.join(',')}
                 style={`animation-delay: ${0.2 + index * 0.1}s`}
               >
-                <div class="blog-card-content">
-                  <header class="mb-4">
-                    <h2 class="blog-card-title">
-                      <a href={`/blog/${post.data.slug}`} class="hover:text-orange-light transition-colors">
+                <article>
+                  <div class="blog-card-content">
+                    <header class="mb-4">
+                      <h2 class="blog-card-title hover:text-orange-light transition-colors">
                         {post.data.title}
-                      </a>
-                    </h2>
-                    <div class="blog-card-meta">
-                      <time class="blog-card-date" datetime={post.data.pubDate.toISOString()}>
-                        {post.data.pubDate.toLocaleDateString('ja-JP')}
-                      </time>
-                      {post.data.updatedDate && (
-                        <span class="text-text-muted">
-                          更新: {post.data.updatedDate.toLocaleDateString('ja-JP')}
-                        </span>
-                      )}
-                    </div>
-                  </header>
-                  {post.data.description && (
-                    <p class="blog-card-excerpt">{post.data.description}</p>
-                  )}
-                  {post.data.tags && post.data.tags.length > 0 && (
-                    <div class="blog-card-tags">
-                      {post.data.tags.map((tag: string) => (
-                        <span class="blog-card-tag">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </article>
+                      </h2>
+                      <div class="blog-card-meta">
+                        <time class="blog-card-date" datetime={post.data.pubDate.toISOString()}>
+                          {post.data.pubDate.toLocaleDateString('ja-JP')}
+                        </time>
+                        {post.data.updatedDate && (
+                          <span class="text-text-muted">
+                            更新: {post.data.updatedDate.toLocaleDateString('ja-JP')}
+                          </span>
+                        )}
+                      </div>
+                    </header>
+                    {post.data.description && (
+                      <p class="blog-card-excerpt">{post.data.description}</p>
+                    )}
+                    {post.data.tags && post.data.tags.length > 0 && (
+                      <div class="blog-card-tags">
+                        {post.data.tags.map((tag: string) => (
+                          <span class="blog-card-tag">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </article>
+              </a>
             ))}
           </div>
         )}

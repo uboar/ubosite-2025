@@ -63,30 +63,34 @@ const featuredWorks = allWorks
               : 'grid-cols-1 md:grid-cols-2'
           }`}>
             {featuredBlogPosts.map((post, index) => (
-              <article class="card motion-preset-slide-up-sm" style={`animation-delay: ${0.2 + index * 0.1}s`}>
-                <header class="mb-4">
-                  <h3 class="text-xl font-semibold mb-2">
-                    <a href={`/blog/${post.data.slug}`} class="text-orange-main hover:text-orange-light transition-colors">
+              <a 
+                href={`/blog/${post.data.slug}`}
+                class="card motion-preset-slide-up-sm hover:scale-[1.02] transition-transform duration-300 block" 
+                style={`animation-delay: ${0.2 + index * 0.1}s`}
+              >
+                <article>
+                  <header class="mb-4">
+                    <h3 class="text-xl font-semibold mb-2 text-orange-main hover:text-orange-light transition-colors">
                       {post.data.title}
-                    </a>
-                  </h3>
-                  <time class="text-sm text-text-muted" datetime={post.data.pubDate.toISOString()}>
-                    {post.data.pubDate.toLocaleDateString('ja-JP')}
-                  </time>
-                </header>
-                
-                {post.data.description && (
-                  <p class="text-text-secondary mb-4 line-clamp-3">{post.data.description}</p>
-                )}
-                
-                {post.data.tags && post.data.tags.length > 0 && (
-                  <div class="flex flex-wrap gap-2">
-                    {post.data.tags.slice(0, 3).map((tag) => (
-                      <span class="blog-card-tag">{tag}</span>
-                    ))}
-                  </div>
-                )}
-              </article>
+                    </h3>
+                    <time class="text-sm text-text-muted" datetime={post.data.pubDate.toISOString()}>
+                      {post.data.pubDate.toLocaleDateString('ja-JP')}
+                    </time>
+                  </header>
+                  
+                  {post.data.description && (
+                    <p class="text-text-secondary mb-4 line-clamp-3">{post.data.description}</p>
+                  )}
+                  
+                  {post.data.tags && post.data.tags.length > 0 && (
+                    <div class="flex flex-wrap gap-2">
+                      {post.data.tags.slice(0, 3).map((tag) => (
+                        <span class="blog-card-tag">{tag}</span>
+                      ))}
+                    </div>
+                  )}
+                </article>
+              </a>
             ))}
           </div>
           
