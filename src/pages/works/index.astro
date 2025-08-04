@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "@layouts/Layout.astro";
+import { predefinedTags } from "@config/tags";
 
 // 全ての作品を取得
 const allWorks = await getCollection("works");
@@ -9,7 +10,7 @@ const sortedWorks = allWorks.sort(
 );
 
 const pageTitle = "WORKS";
-const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
+const displayTags = predefinedTags.works;
 ---
 
 <Layout 
@@ -38,6 +39,18 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
         <!-- タグフィルター -->
         <div>
           <p class="text-sm text-text-muted mb-3">タグで絞り込み:</p>
+          
+          <!-- タグ入力 -->
+          <div class="mb-3">
+            <input 
+              id="tag-input"
+              type="text" 
+              placeholder="タグを入力..."
+              class="w-full px-4 py-2 bg-bg-secondary border border-orange-main/20 rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:border-orange-main focus:ring-2 focus:ring-orange-main/20 transition-all text-sm"
+            />
+          </div>
+          
+          <!-- プリセットタグボタン -->
           <div class="flex flex-wrap gap-2">
             <button 
               id="tag-all"
@@ -46,7 +59,7 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
             >
               全て
             </button>
-            {allTags.map((tag: string) => (
+            {displayTags.map((tag) => (
               <button 
                 class="tag-filter btn btn-outline btn-sm"
                 data-tag={tag}
@@ -207,9 +220,11 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
     let currentPage = 1;
     let currentTag = 'all';
     let currentSearch = '';
+    let currentTagSearch = '';
     
     // DOM要素
     const searchInput = document.getElementById('search-input');
+    const tagInput = document.getElementById('tag-input') as HTMLInputElement;
     const tagFilters = document.querySelectorAll('.tag-filter');
     const workItems = document.querySelectorAll('.work-item');
     const noResults = document.getElementById('no-results');
@@ -231,6 +246,23 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
       updateDisplay();
     });
     
+    // タグ検索機能
+    tagInput?.addEventListener('input', (e) => {
+      currentTagSearch = (e.target as HTMLInputElement).value.toLowerCase();
+      currentTag = 'all'; // タグ検索時はボタン選択をリセット
+      
+      // ボタンのスタイルをリセット
+      tagFilters.forEach(btn => {
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-outline');
+      });
+      document.getElementById('tag-all')?.classList.add('btn-primary');
+      document.getElementById('tag-all')?.classList.remove('btn-outline');
+      
+      currentPage = 1;
+      updateDisplay();
+    });
+    
     // タグフィルター機能
     tagFilters.forEach(button => {
       button.addEventListener('click', (e) => {
@@ -245,6 +277,8 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
         target.classList.remove('btn-outline');
         
         currentTag = target.dataset.tag || 'all';
+        currentTagSearch = ''; // タグボタン選択時はタグ検索をクリア
+        if (tagInput) tagInput.value = '';
         currentPage = 1; // タグ変更時は1ページ目に戻る
         updateDisplay();
       });
@@ -259,7 +293,16 @@ const allTags = [...new Set(allWorks.flatMap(work => work.data.tags))];
           work.description.includes(currentSearch);
         
         // タグ条件チェック
-        const matchesTag = currentTag === 'all' || work.tags.includes(currentTag);
+        let matchesTag = true;
+        if (currentTagSearch !== '') {
+          // タグ検索モード
+          matchesTag = work.tags.some(tag => 
+            tag.toLowerCase().includes(currentTagSearch)
+          );
+        } else if (currentTag !== 'all') {
+          // タグボタン選択モード
+          matchesTag = work.tags.includes(currentTag);
+        }
         
         return matchesSearch && matchesTag;
       });
