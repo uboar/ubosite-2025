@@ -30,7 +30,6 @@
 }
 
 .card:hover {
-  transform: translateY(-8px);
   border-color: rgba(255, 107, 53, 0.3);
   box-shadow: var(--glow-primary), var(--shadow-medium);
   background: rgba(26, 26, 26, 0.8);

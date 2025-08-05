@@ -85,7 +85,7 @@ const displayTags = predefinedTags.works;
                   href={work.data.projectUrl} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  class="work-item card h-full flex flex-col motion-preset-slide-up-sm hover:scale-[1.02] transition-transform duration-300 group p-3"
+                  class="work-item project-card h-full flex flex-col motion-preset-slide-up-sm hover:scale-[1.02] transition-transform duration-300 group p-3"
                   data-title={work.data.title.toLowerCase()}
                   data-description={work.data.description?.toLowerCase() || ''}
                   data-tags={work.data.tags.join(',')}
@@ -141,7 +141,7 @@ const displayTags = predefinedTags.works;
               ) : (
                 <a 
                   href={`/works/${work.data.slug}`}
-                  class="work-item card h-full flex flex-col motion-preset-slide-up-sm hover:scale-[1.02] transition-transform duration-300 group p-3"
+                  class="work-item project-card h-full flex flex-col motion-preset-slide-up-sm hover:scale-[1.02] transition-transform duration-300 group p-3"
                   data-title={work.data.title.toLowerCase()}
                   data-description={work.data.description?.toLowerCase() || ''}
                   data-tags={work.data.tags.join(',')}
