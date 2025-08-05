@@ -11,6 +11,9 @@ export const predefinedTags = {
     '動画投稿',
     '同人即売会',
     'DJ',
+    'シングル',
+    'EP',
+    'アルバム',
     '紡乃世詞音',
   ],
 } as const;
