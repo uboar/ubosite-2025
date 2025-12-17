@@ -1,13 +1,13 @@
 ---
-import { getCollection, render } from 'astro:content';
-import Layout from '@layouts/Layout.astro';
-import TableOfContents from '@components/TableOfContents.astro';
-import SocialShare from '@components/SocialShare.astro';
-import { extractTocFromMarkdown } from '@utils/toc';
+import { getCollection, render } from "astro:content";
+import Layout from "@layouts/Layout.astro";
+import TableOfContents from "@components/TableOfContents.astro";
+import SocialShare from "@components/SocialShare.astro";
+import { extractTocFromMarkdown } from "@utils/toc";
 
 export async function getStaticPaths() {
-  const works = await getCollection('works');
-  return works.map(work => ({
+  const works = await getCollection("works");
+  return works.map((work) => ({
     params: { slug: work.data.slug },
     props: { work },
   }));
@@ -17,93 +17,122 @@ const { work } = Astro.props;
 const { Content } = await render(work);
 
 // 目次を抽出
-const toc = extractTocFromMarkdown(work.body || '');
+const toc = extractTocFromMarkdown(work.body || "");
 ---
 
-<Layout 
+<Layout
   title={`${work.data.title} - UBOPAGE`}
   description={work.data.description}
   currentPath={`/works/${work.data.slug}`}
   backgroundPattern="main"
-  ogImage={new URL(`/og/works/${work.data.slug}.png`, Astro.site || 'https://uboar.net').href}
+  ogImage={new URL(
+    `/og/works/${work.data.slug}.png`,
+    Astro.site || "https://uboar.net",
+  ).href}
 >
-  <div class="container">
+  <div class="container !max-w-[1440px]">
     <div class="py-8">
       <nav class="mb-8">
-        <a href="/works/" class="btn btn-outline btn-sm motion-preset-slide-right-sm">← 一覧に戻る</a>
+        <a
+          href="/works/"
+          class="btn btn-outline btn-sm motion-preset-slide-right-sm"
+          >← 一覧に戻る</a
+        >
       </nav>
-    
-      <div class="lg:flex lg:gap-8 xl:gap-12">
+
+      <div class="lg:flex lg:gap-12 xl:gap-20">
         <!-- メインコンテンツ -->
-        <article class="lg:w-3/4 min-w-0">
+        <article class="lg:w-[70%] min-w-0">
           <header class="mb-12 motion-preset-slide-up-sm border-b">
             <div class="mb-6">
-              <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight break-words">{work.data.title}</h1>
+              <h1
+                class="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight break-words"
+              >
+                {work.data.title}
+              </h1>
             </div>
-            
-            <div class="flex flex-wrap items-center gap-4 text-text-muted mb-6 text-sm sm:text-base">
-              <time class="blog-card-date" datetime={work.data.pubDate.toISOString()}>
-                投稿日: {work.data.pubDate.toLocaleDateString('ja-JP')}
+
+            <div
+              class="flex flex-wrap items-center gap-4 text-text-muted mb-6 text-sm sm:text-base"
+            >
+              <time
+                class="blog-card-date"
+                datetime={work.data.pubDate.toISOString()}
+              >
+                投稿日: {work.data.pubDate.toLocaleDateString("ja-JP")}
               </time>
-              {work.data.updatedDate && (
-                <span>
-                  更新日: {work.data.updatedDate.toLocaleDateString('ja-JP')}
-                </span>
-              )}
-            </div>
-            
-            {work.data.description && (
-              <p class="text-lg sm:text-xl text-text-secondary mb-8 leading-relaxed">{work.data.description}</p>
-            )}
-            
-            {work.data.tags && work.data.tags.length > 0 && (
-              <div class="flex flex-wrap gap-2 mb-8">
-                {work.data.tags.map((tag) => (
-                  <span class="project-card-tech-tag">
-                    {tag}
+              {
+                work.data.updatedDate && (
+                  <span>
+                    更新日: {work.data.updatedDate.toLocaleDateString("ja-JP")}
                   </span>
-                ))}
-              </div>
-            )}
-            
-            {work.data.image && (
-              <div class="mb-8">
-                <img 
-                  src={work.data.image} 
-                  alt={work.data.title}
-                  class="w-full h-auto rounded-xl shadow-lg max-w-full"
-                  loading="lazy"
-                />
-              </div>
-            )}
-            
-            {work.data.projectUrl && (
-              <div class="mb-8">
-                <a 
-                  href={work.data.projectUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  class="btn btn-primary btn-lg"
-                >
-                  🔗 プロジェクトを見る
-                </a>
-              </div>
-            )}
+                )
+              }
+            </div>
+
+            {
+              work.data.description && (
+                <p class="text-lg sm:text-xl text-text-secondary mb-8 leading-relaxed">
+                  {work.data.description}
+                </p>
+              )
+            }
+
+            {
+              work.data.tags && work.data.tags.length > 0 && (
+                <div class="flex flex-wrap gap-2 mb-8">
+                  {work.data.tags.map((tag) => (
+                    <span class="project-card-tech-tag">{tag}</span>
+                  ))}
+                </div>
+              )
+            }
+
+            {
+              work.data.image && (
+                <div class="mb-8">
+                  <img
+                    src={work.data.image}
+                    alt={work.data.title}
+                    class="w-full h-auto rounded-xl shadow-lg max-w-full"
+                    loading="lazy"
+                  />
+                </div>
+              )
+            }
+
+            {
+              work.data.projectUrl && (
+                <div class="mb-8">
+                  <a
+                    href={work.data.projectUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn btn-primary btn-lg"
+                  >
+                    🔗 プロジェクトを見る
+                  </a>
+                </div>
+              )
+            }
           </header>
-          
-          <div class="prose prose-base sm:prose-lg lg:prose-xl prose-invert max-w-full motion-preset-slide-up-sm overflow-hidden" style="animation-delay: 0.2s">
+
+          <div
+            class="prose prose-base sm:prose-lg lg:prose-xl prose-invert max-w-full motion-preset-slide-up-sm overflow-hidden"
+            style="animation-delay: 0.2s"
+          >
             <Content />
           </div>
-          
-          <SocialShare 
+
+          <SocialShare
             title={work.data.title}
-            url={`${Astro.site || 'https://ubo-site.vercel.app/'}works/${work.data.slug}`}
+            url={`${Astro.site || "https://ubo-site.vercel.app/"}works/${work.data.slug}`}
             description={work.data.description}
           />
         </article>
-        
+
         <!-- サイドバー（目次） -->
-        <aside class="lg:w-1/4 lg:min-w-0 mt-12 lg:mt-0">
+        <aside class="lg:w-[30%] lg:min-w-0 mt-12 lg:mt-0">
           <div class="lg:sticky lg:top-24">
             <TableOfContents toc={toc} />
           </div>

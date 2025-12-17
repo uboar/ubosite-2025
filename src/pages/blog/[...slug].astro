@@ -30,15 +30,15 @@ const articleImage = post.data.image || new URL(`/og/blog/${post.data.slug}.png`
   backgroundPattern="main"
   ogImage={new URL(`/og/blog/${post.data.slug}.png`, Astro.site || 'https://uboar.net').href}
 >
-  <div class="container">
+  <div class="container !max-w-[1440px]">
     <div class="py-8">
       <nav class="mb-8">
         <a href="/blog/" class="btn btn-outline btn-sm motion-preset-slide-right-sm">← ブログ一覧に戻る</a>
       </nav>
     
-      <div class="lg:flex lg:gap-8 xl:gap-12">
+      <div class="lg:flex lg:gap-12 xl:gap-20">
         <!-- メインコンテンツ -->
-        <article class="lg:w-3/4 min-w-0">
+        <article class="lg:w-[70%] min-w-0">
           <header class="mb-12 motion-preset-slide-up-sm border-b">
             <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 leading-tight break-words">{post.data.title}</h1>
             
@@ -91,7 +91,7 @@ const articleImage = post.data.image || new URL(`/og/blog/${post.data.slug}.png`
         </article>
         
         <!-- サイドバー（目次） -->
-        <aside class="lg:w-1/4 lg:min-w-0 mt-12 lg:mt-0">
+        <aside class="lg:w-[30%] lg:min-w-0 mt-12 lg:mt-0">
           <div class="lg:sticky lg:top-24">
             <TableOfContents toc={toc} />
           </div>
