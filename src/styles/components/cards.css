@@ -369,9 +369,22 @@
     flex-direction: column;
     text-align: center;
   }
-  
+
   .link-card:not(.link-card-grid) .link-card-image {
     margin-right: 0;
     margin-bottom: 1rem;
   }
+}
+
+.link-card-content.full-width {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.link-card-grid.no-image-fallback {
+  aspect-ratio: auto;
+  height: auto;
+  min-height: auto;
 }

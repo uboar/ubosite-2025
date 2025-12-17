@@ -100,6 +100,30 @@ function remarkEmbedLinks() {
           ? node.children[0].value
           : "";
 
+      // テキストとURLが異なる場合(=Markdownリンク記法)はスキップ
+      // ただし、完全に一致しなくても、スペースの違いや末尾のスラッシュの違い程度なら許容したい場合もあるが、
+      // ここでは要件に従い「Markdownのリンク記法」(=意図的なテキスト指定)を区別するため
+      // 単純な比較を行う。オートリンクの場合は通常 text === url になる。
+      // さらに、子要素が複数ある場合やテキスト以外の場合もスキップ
+      if (
+        node.children &&
+        (node.children.length > 1 || node.children[0].type !== "text")
+      ) {
+        return;
+      }
+
+      if (linkTitle && linkTitle !== url) {
+        // デコードした整合性チェック（ブラウザの挙動やマークダウンパーサによってはエンコード等の差異が出るため）
+        try {
+          const decodedUrl = decodeURI(url);
+          if (linkTitle !== decodedUrl) {
+            return;
+          }
+        } catch (e) {
+          return;
+        }
+      }
+
       // URLタイプを判定
       const { type: urlType, match: youtubeMatch } = getUrlType(url);
 
@@ -163,7 +187,7 @@ function remarkEmbedLinks() {
               <div class="link-card-grid-container">
                 <div class="link-card-image-container">
                   ${ogpData.image
-              ? `<img src="${ogpData.image}" alt="${title}" loading="lazy" onload="this.naturalWidth > this.naturalHeight * 1.2 ? this.parentNode.parentNode.classList.add('wide-image') : ''" />`
+              ? `<img src="${ogpData.image}" alt="${title}" loading="lazy" onload="this.naturalWidth > this.naturalHeight * 1.2 ? this.parentNode.parentNode.classList.add('wide-image') : ''" onerror="this.parentNode.style.display='none'; this.parentNode.nextElementSibling.classList.add('full-width'); this.closest('.link-card').classList.add('no-image-fallback');" />`
               : `<div class="no-image"></div>`
             }
                 </div>
@@ -224,7 +248,7 @@ function remarkEmbedLinks() {
             const title = ogpData.title || node.children[0]?.value || url;
             const site = ogpData.site_name;
             const imageHtml = ogpData.image
-              ? `<div class="link-card-image"><img src="${ogpData.image}" alt="${title}" loading="lazy" /></div>`
+              ? `<div class="link-card-image"><img src="${ogpData.image}" alt="${title}" loading="lazy" onerror="this.parentNode.remove()" /></div>`
               : "";
 
             // 内部リンクかどうかを判定
@@ -310,7 +334,7 @@ function remarkWikiLinks() {
           r2Url = `https://content.uboar.net/assets/${path}`;
         }
         // それ以外の場合（既に完全なURLの場合など）はそのまま
-        
+
         // URLエンコード（スペースなどの特殊文字を処理）
         r2Url = encodeURI(r2Url);
 

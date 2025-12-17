@@ -1,151 +1,448 @@
 ---
-import '@styles/global.css';
-import Header from '@components/Header.astro';
+import "@styles/global.css";
+import Header from "@components/Header.astro";
 
 interface Props {
   title: string;
   description?: string;
   currentPath?: string;
-  backgroundPattern?: 'main' | 'blog' | 'works' | 'links';
+  backgroundPattern?: "main" | "blog" | "works" | "links";
   ogImage?: string;
 }
 
-const { 
-  title, 
-  description = 'WRITE SOMETHING ANYWAY',
-  currentPath = '',
-  backgroundPattern = 'main',
-  ogImage
+const {
+  title,
+  description = "WRITE SOMETHING ANYWAY",
+  currentPath = "",
+  backgroundPattern = "main",
+  ogImage,
 } = Astro.props;
 
-const site = Astro.site || new URL('https://uboar.net');
-const defaultOgImage = new URL('/og/home.png', site).href;
+const site = Astro.site || new URL("https://uboar.net");
+const defaultOgImage = new URL("/og/home.png", site).href;
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{title}</title>
-  <meta name="description" content={description}>
-  
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website">
-  <meta property="og:title" content={title}>
-  <meta property="og:description" content={description}>
-  <meta property="og:site_name" content="UBOPAGE">
-  <meta property="og:image" content={ogImage || defaultOgImage}>
-  <meta property="og:url" content={new URL(Astro.url.pathname, site).href}>
-  
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content={title}>
-  <meta name="twitter:description" content={description}>
-  <meta name="twitter:image" content={ogImage || defaultOgImage}>
-  <meta name="twitter:site" content="@uboar">
-  
-  <!-- Canonical URL -->
-  <link rel="canonical" href={new URL(Astro.url.pathname, site).href}>
-  
-  <!-- Additional SEO Meta Tags -->
-  <meta name="author" content="UBOAR">
-  <meta name="robots" content="index, follow">
-  
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  
-  <!-- Preconnect to external domains -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://content.uboar.net">
-  <link rel="dns-prefetch" href="https://content.uboar.net">
-  
-  <!-- Fonts with font-display: swap for better performance -->
-  <style is:inline>
-    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@300;400;500;600;700&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
-  </style>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
 
-  
-  <!-- Structured Data (JSON-LD) -->
-  <script type="application/ld+json" is:inline>
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "UBOPAGE",
-      "url": "https://uboar.net",
-      "description": "UBOARの個人サイト。プログラミング、ゲーム開発、イラスト、音楽などの創作活動を公開しています。",
-      "author": {
-        "@type": "Person",
-        "name": "UBOAR",
-        "url": "https://uboar.net"
-      },
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": "https://uboar.net/search?q={search_term_string}"
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:site_name" content="UBOPAGE" />
+    <meta property="og:image" content={ogImage || defaultOgImage} />
+    <meta property="og:url" content={new URL(Astro.url.pathname, site).href} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage || defaultOgImage} />
+    <meta name="twitter:site" content="@uboar" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={new URL(Astro.url.pathname, site).href} />
+
+    <!-- Additional SEO Meta Tags -->
+    <meta name="author" content="UBOAR" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://content.uboar.net" />
+    <link rel="dns-prefetch" href="https://content.uboar.net" />
+
+    <!-- Fonts with font-display: swap for better performance -->
+    <style is:inline>
+      @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@300;400;500;600;700&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap");
+    </style>
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json" is:inline>
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "UBOPAGE",
+        "url": "https://uboar.net",
+        "description": "UBOARの個人サイト。プログラミング、ゲーム開発、イラスト、音楽などの創作活動を公開しています。",
+        "author": {
+          "@type": "Person",
+          "name": "UBOAR",
+          "url": "https://uboar.net"
         },
-        "query-input": "required name=search_term_string"
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://uboar.net/search?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
       }
-    }
-  </script>
-</head>
-<body class={`bg-pattern-${backgroundPattern} particles motion-preset-fade`}>
-  <Header currentPath={currentPath} />
-  
-  <main class="main-content">
-    <slot />
-  </main>
-  
-  <!-- Global styles for body padding -->
-  <style>
-    /* Ensure full height for html and body */
-    html, body {
-      height: 100%;
-      min-height: 100vh;
-    }
-    
-    body {
-      background-attachment: fixed;
-    }
-    
-    .main-content {
-      padding-top: 5rem; /* Header height + spacing */
-      min-height: calc(100vh - 5rem);
-      position: relative;
-      z-index: 1;
-    }
-    
-    /* Ensure smooth scrolling */
-    html {
-      scroll-behavior: smooth;
-    }
-    
-    /* Custom scrollbar for webkit browsers */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-    
-    ::-webkit-scrollbar-track {
-      background: var(--bg-secondary);
-    }
-    
-    ::-webkit-scrollbar-thumb {
-      background: var(--orange-main);
-      border-radius: 4px;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--orange-light);
-    }
-    
-    /* Focus indicators for accessibility */
-    :focus-visible {
-      outline: 2px solid var(--orange-main);
-      outline-offset: 2px;
-    }
-  </style>
-</body>
-</html></slot>
+    </script>
+  </head>
+  <body class={`bg-pattern-${backgroundPattern} particles motion-preset-fade`}>
+    <Header currentPath={currentPath} />
+
+    <main class="main-content">
+      <slot />
+    </main>
+
+    <!-- Global styles for body padding -->
+    <style>
+      /* Ensure full height for html and body */
+      html,
+      body {
+        height: 100%;
+        min-height: 100vh;
+      }
+
+      body {
+        background-attachment: fixed;
+      }
+
+      .main-content {
+        padding-top: 5rem; /* Header height + spacing */
+        min-height: calc(100vh - 5rem);
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Ensure smooth scrolling */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Custom scrollbar for webkit browsers */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: var(--bg-secondary);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--orange-main);
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--orange-light);
+      }
+
+      /* Focus indicators for accessibility */
+      :focus-visible {
+        outline: 2px solid var(--orange-main);
+        outline-offset: 2px;
+      }
+    </style>
+    <script>
+      // Lightbox機能
+      document.addEventListener("DOMContentLoaded", () => {
+        // 既存のLightboxがあれば削除（ページ遷移時の重複防止）
+        const existingLightbox = document.getElementById("image-lightbox");
+        if (existingLightbox) existingLightbox.remove();
+
+        const lightbox = document.createElement("div");
+        lightbox.id = "image-lightbox";
+        lightbox.className = "lightbox hidden";
+        lightbox.innerHTML = `
+        <div class="lightbox-overlay"></div>
+        <div class="lightbox-content">
+          <img src="" alt="">
+          <button class="lightbox-close" aria-label="Close">×</button>
+        </div>
+      `;
+        document.body.appendChild(lightbox);
+
+        const lightboxImg = lightbox.querySelector("img");
+        const closeBtn = lightbox.querySelector(".lightbox-close");
+        const overlay = lightbox.querySelector(".lightbox-overlay");
+        const content = lightbox.querySelector(".lightbox-content");
+
+        // 状態管理
+        let state = {
+          scale: 1,
+          panning: false,
+          pointX: 0,
+          pointY: 0,
+          startX: 0,
+          startY: 0,
+        };
+
+        const resetState = () => {
+          state = {
+            scale: 1,
+            panning: false,
+            pointX: 0,
+            pointY: 0,
+            startX: 0,
+            startY: 0,
+          };
+          updateTransform();
+        };
+
+        const updateTransform = () => {
+          if (!lightboxImg) return;
+          lightboxImg.style.transform = `translate(${state.pointX}px, ${state.pointY}px) scale(${state.scale})`;
+        };
+
+        const closeLightbox = () => {
+          lightbox.classList.add("hidden");
+          document.body.style.overflow = "";
+          resetState();
+        };
+
+        const openLightbox = (src, alt) => {
+          lightboxImg.src = src;
+          lightboxImg.alt = alt || "";
+          lightbox.classList.remove("hidden");
+          document.body.style.overflow = "hidden";
+          resetState();
+        };
+
+        // イベントリスナー
+        closeBtn.addEventListener("click", closeLightbox);
+        overlay.addEventListener("click", closeLightbox);
+
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && !lightbox.classList.contains("hidden"))
+            closeLightbox();
+        });
+
+        // ズーム・パン機能
+        lightboxImg.addEventListener(
+          "wheel",
+          (e) => {
+            e.preventDefault();
+            const delta = -Math.sign(e.deltaY) * 0.1;
+            const newScale = Math.min(Math.max(0.5, state.scale + delta), 5);
+            state.scale = newScale;
+            updateTransform();
+          },
+          { passive: false },
+        );
+
+        // ポインターイベント（マウス/タッチ共通のドラッグ処理）
+        let isPointerDown = false;
+        let lastPointerX = 0;
+        let lastPointerY = 0;
+
+        // ピンチズーム用の変数
+        let initialPinchDistance = 0;
+        let initialScale = 1;
+
+        content.addEventListener("pointerdown", (e) => {
+          // 閉じるボタンの場合は何もしない
+          if (e.target.closest(".lightbox-close")) return;
+
+          // マルチタッチ（ピンチ）の場合はドラッグ処理をしない
+          if (e.pointerType === "touch" && !e.isPrimary) return;
+
+          isPointerDown = true;
+          lastPointerX = e.clientX;
+          lastPointerY = e.clientY;
+          state.startX = state.pointX;
+          state.startY = state.pointY;
+
+          // 画像のキャプチャ（スムーズなドラッグのため）
+          lightboxImg.setPointerCapture(e.pointerId);
+          e.preventDefault();
+        });
+
+        content.addEventListener("pointermove", (e) => {
+          if (!isPointerDown) return;
+
+          // 移動量を計算
+          const deltaX = e.clientX - lastPointerX;
+          const deltaY = e.clientY - lastPointerY;
+
+          // 拡大時のみパンを有効にする、または少し余裕を持たせる
+          // ここでは常にパン可能にするが、scale=1のときはリセットされやすい挙動も考慮可能
+          state.pointX += deltaX;
+          state.pointY += deltaY;
+
+          lastPointerX = e.clientX;
+          lastPointerY = e.clientY;
+
+          updateTransform();
+        });
+
+        const handlePointerUp = (e) => {
+          isPointerDown = false;
+          if (lightboxImg) lightboxImg.releasePointerCapture(e.pointerId);
+
+          // スケールが1未満になったらリセット
+          if (state.scale < 1) {
+            state.scale = 1;
+            state.pointX = 0;
+            state.pointY = 0;
+            updateTransform();
+          }
+        };
+
+        content.addEventListener("pointerup", handlePointerUp);
+        content.addEventListener("pointercancel", handlePointerUp);
+
+        // ピンチズーム（タッチデバイス専用）
+        content.addEventListener("touchstart", (e) => {
+          if (e.touches.length === 2) {
+            isPointerDown = false; // ピンチ中はドラッグ解除
+            const touch1 = e.touches[0];
+            const touch2 = e.touches[1];
+            initialPinchDistance = Math.hypot(
+              touch2.clientX - touch1.clientX,
+              touch2.clientY - touch1.clientY,
+            );
+            initialScale = state.scale;
+          }
+        });
+
+        content.addEventListener(
+          "touchmove",
+          (e) => {
+            if (e.touches.length === 2) {
+              e.preventDefault();
+              const touch1 = e.touches[0];
+              const touch2 = e.touches[1];
+              const currentDistance = Math.hypot(
+                touch2.clientX - touch1.clientX,
+                touch2.clientY - touch1.clientY,
+              );
+
+              if (initialPinchDistance > 0) {
+                const scaleChange = currentDistance / initialPinchDistance;
+                state.scale = Math.min(
+                  Math.max(0.5, initialScale * scaleChange),
+                  5,
+                );
+                updateTransform();
+              }
+            }
+          },
+          { passive: false },
+        );
+
+        // 画像にクリックイベントを追加
+        const setupImages = () => {
+          const images = document.querySelectorAll(".main-content img");
+          images.forEach((img) => {
+            if (
+              img.closest("a") ||
+              img.closest(".link-card") ||
+              img.classList.contains("no-lightbox")
+            )
+              return;
+
+            img.style.cursor = "zoom-in";
+            img.addEventListener("click", (e) => {
+              e.preventDefault();
+              openLightbox(img.src, img.alt);
+            });
+          });
+        };
+
+        setupImages();
+      });
+    </script>
+
+    <style is:global>
+      /* Lightbox Styles */
+      .lightbox {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 1;
+        visibility: visible;
+        transition:
+          opacity 0.3s ease,
+          visibility 0.3s ease;
+        touch-action: none; /* ジェスチャー制御のためブラウザのデフォルト動作を無効化 */
+      }
+
+      .lightbox.hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .lightbox-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+      }
+
+      .lightbox-content {
+        position: relative;
+        z-index: 10000;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden; /* コンテンツがはみ出さないように */
+      }
+
+      .lightbox-content img {
+        max-width: 90%;
+        max-height: 90vh;
+        object-fit: contain;
+        border-radius: 4px;
+        box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+        transform-origin: center center;
+        /* transition: transform 0.1s ease-out;  ドラッグ時の遅延を防ぐためtransitionは削除または調整 */
+        cursor: grab;
+      }
+
+      .lightbox-content img:active {
+        cursor: grabbing;
+      }
+
+      .lightbox-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10001;
+        transition: all 0.2s ease;
+      }
+
+      .lightbox-close:hover {
+        background: rgba(255, 107, 53, 0.8);
+        transform: scale(1.1);
+      }
+    </style>
+  </body>
+</html>
