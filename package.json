@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "sync": "node scripts/sync-content.js",
+    "content-clean": "node scripts/clean-content.js",
     "dev": "pnpm sync && astro dev",
     "build": "astro build",
     "build-w-sync": "pnpm sync && astro build",
