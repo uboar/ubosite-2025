@@ -5,6 +5,7 @@
   "scripts": {
     "sync": "node scripts/sync-content.js",
     "content-clean": "node scripts/clean-content.js",
+    "local-dev": "node scripts/local-dev.js",
     "dev": "pnpm sync && astro dev",
     "build": "astro build",
     "build-w-sync": "pnpm sync && astro build",
