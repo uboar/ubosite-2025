@@ -13,6 +13,7 @@
 }
 
 /* 見出し */
+/* 見出し */
 .prose h1,
 .prose h2,
 .prose h3,
@@ -21,17 +22,53 @@
 .prose h6 {
   color: var(--text-primary);
   font-weight: 700;
-  line-height: 1.25;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
+  line-height: 1.4;
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
 }
 
-.prose h1 { font-size: 2.25rem; }
-.prose h2 { font-size: 1.875rem; }
-.prose h3 { font-size: 1.5rem; }
-.prose h4 { font-size: 1.25rem; }
-.prose h5 { font-size: 1.125rem; }
-.prose h6 { font-size: 1rem; }
+.prose h1 {
+  font-size: 2.25rem;
+  border-bottom: 3px solid var(--orange-main);
+  padding-bottom: 0.5rem;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.prose h2 {
+  font-size: 1.875rem;
+  margin-top: 4.5rem;
+  margin-bottom: 2rem;
+  padding-left: 1rem;
+  border-left: 4px solid var(--orange-main);
+  background: linear-gradient(90deg, rgba(255, 107, 53, 0.1) 0%, transparent 100%);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-radius: 0 4px 4px 0;
+}
+
+.prose h3 {
+  font-size: 1.5rem;
+  margin-top: 3.5rem;
+  margin-bottom: 1.5rem;
+  padding-left: 0.75rem;
+  border-left: 3px solid var(--orange-accent);
+}
+
+.prose h4 {
+  font-size: 1.25rem;
+  margin-top: 2.5rem;
+  padding-left: 0.5rem;
+  border-left: 2px solid var(--text-muted);
+}
+
+.prose h5 {
+  font-size: 1.125rem;
+}
+
+.prose h6 {
+  font-size: 1rem;
+}
 
 /* 段落 */
 .prose p {
@@ -63,8 +100,8 @@
   margin: 0.5rem 0;
 }
 
-.prose li > ul,
-.prose li > ol {
+.prose li>ul,
+.prose li>ol {
   margin: 0.5rem 0;
 }
 
@@ -214,21 +251,36 @@
     font-size: 0.875rem;
     line-height: 1.625;
   }
-  
-  .prose h1 { font-size: 1.875rem; }
-  .prose h2 { font-size: 1.5rem; }
-  .prose h3 { font-size: 1.25rem; }
-  
+
+  .prose h1 {
+    font-size: 1.875rem;
+    margin-top: 2.5rem;
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+    padding-left: 0.75rem;
+  }
+
+  .prose h3 {
+    font-size: 1.25rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1.25rem;
+    padding-left: 0.5rem;
+  }
+
   .prose pre {
     padding: 0.75rem;
     margin: 1rem 0;
     font-size: 0.8rem;
   }
-  
+
   .prose table {
     font-size: 0.8rem;
   }
-  
+
   .prose th,
   .prose td {
     padding: 0.5rem;
