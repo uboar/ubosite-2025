@@ -2,8 +2,8 @@
 
 export const predefinedTags = {
   blog: [
-    'POEM',
-    'OTHER',
+    'ニコニコメドレーシリーズ',
+    'アドベントカレンダー',
   ],
   works: [
     '音楽',
